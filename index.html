@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SDE-2 DSA Prep — 28-Day Course</title>
+<style>
+  :root {
+    --bg: #0f1117; --panel: #171a23; --panel2: #1e2230; --border: #2a2f3f;
+    --text: #e6e8ee; --muted: #9aa1b5; --accent: #5b8cff; --accent2: #7ee0a3;
+    --warn: #ffb454; --bad: #ff6b6b; --good: #4ade80;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; }
+  .app { display: flex; height: 100vh; }
+  .sidebar { width: 270px; background: var(--panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; }
+  .logo { padding: 18px 16px 12px; border-bottom: 1px solid var(--border); }
+  .logo h1 { font-size: 16px; }
+  .logo p { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .nav { flex: 1; overflow-y: auto; padding: 10px; }
+  .nav-item { padding: 8px 10px; border-radius: 7px; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 8px; color: var(--muted); margin-bottom: 2px; }
+  .nav-item:hover { background: var(--panel2); color: var(--text); }
+  .nav-item.active { background: var(--accent); color: #fff; }
+  .nav-item.done .num { background: var(--good); color: #06210f; }
+  .nav-item .num { width: 22px; height: 22px; border-radius: 5px; background: var(--panel2); display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; flex-shrink: 0; }
+  .week-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); padding: 12px 10px 6px; font-weight: 700; }
+  .main { flex: 1; overflow-y: auto; }
+  .topbar { position: sticky; top: 0; background: var(--panel); border-bottom: 1px solid var(--border); padding: 12px 28px; display: flex; align-items: center; justify-content: space-between; z-index: 5; }
+  .topbar h2 { font-size: 17px; }
+  .topbar .sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .content { padding: 26px 32px 60px; max-width: 900px; }
+  .tabs { display: flex; gap: 6px; margin-bottom: 22px; border-bottom: 1px solid var(--border); }
+  .tab { padding: 9px 16px; cursor: pointer; font-size: 13px; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+  .lesson h3 { color: var(--accent2); font-size: 15px; margin: 22px 0 8px; }
+  .lesson h3:first-child { margin-top: 0; }
+  .lesson p { line-height: 1.7; margin-bottom: 10px; color: #d3d7e3; }
+  .lesson ul, .lesson ol { margin: 0 0 12px 22px; line-height: 1.7; color: #d3d7e3; }
+  .lesson li { margin-bottom: 5px; }
+  .lesson code { background: var(--panel2); padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--accent2); }
+  .callout { background: var(--panel2); border-left: 3px solid var(--accent); padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 14px 0; font-size: 13.5px; line-height: 1.6; }
+  .callout.warn { border-left-color: var(--warn); }
+  pre { background: #10131c; border: 1px solid var(--border); border-radius: 8px; padding: 16px; overflow-x: auto; font-size: 13px; line-height: 1.55; margin: 12px 0; font-family: 'Cascadia Code', Consolas, monospace; color: #cfe3ff; }
+  .prob-card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; margin-bottom: 12px; }
+  .prob-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+  .prob-title { font-weight: 600; font-size: 14.5px; }
+  .prob-title a { color: var(--accent); text-decoration: none; }
+  .prob-title a:hover { text-decoration: underline; }
+  .diff { font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
+  .diff.easy { color: var(--good); background: rgba(74,222,128,.12); }
+  .diff.med { color: var(--warn); background: rgba(255,180,84,.12); }
+  .diff.hard { color: var(--bad); background: rgba(255,107,107,.12); }
+  .status-btns { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+  .sbtn { font-size: 11.5px; padding: 5px 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--panel2); color: var(--muted); cursor: pointer; }
+  .sbtn:hover { border-color: var(--accent); color: var(--text); }
+  .sbtn.sel-independent { background: rgba(74,222,128,.18); border-color: var(--good); color: var(--good); }
+  .sbtn.sel-hints { background: rgba(255,180,84,.18); border-color: var(--warn); color: var(--warn); }
+  .sbtn.sel-solution { background: rgba(255,107,107,.15); border-color: var(--bad); color: var(--bad); }
+  .sbtn.sel-revision { background: rgba(91,140,255,.18); border-color: var(--accent); color: var(--accent); }
+  .check-q { background: var(--panel2); border: 1px dashed var(--accent); border-radius: 10px; padding: 16px 18px; margin-bottom: 12px; font-size: 14px; line-height: 1.6; }
+  .check-q .qn { color: var(--accent); font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 6px; }
+  .note { font-size: 12.5px; color: var(--muted); line-height: 1.6; }
+  .btn { background: var(--accent); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; cursor: pointer; font-weight: 600; }
+  .btn:hover { filter: brightness(1.12); }
+  .btn.ghost { background: var(--panel2); border: 1px solid var(--border); color: var(--text); font-weight: 400; }
+  .btn.small { padding: 6px 12px; font-size: 12px; }
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 18px 0; }
+  .stat { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+  .stat .v { font-size: 26px; font-weight: 700; color: var(--accent); }
+  .stat .l { font-size: 11.5px; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: .5px; }
+  .pbar { height: 8px; background: var(--panel2); border-radius: 4px; overflow: hidden; margin: 8px 0 4px; }
+  .pbar > div { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 4px; transition: width .3s; }
+  .timer-box { display: flex; gap: 10px; align-items: center; background: var(--panel2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; flex-wrap: wrap; }
+  .timer-box .t { font-size: 22px; font-family: monospace; font-weight: 700; min-width: 90px; }
+  .tpreset { font-size: 11px; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--panel); color: var(--muted); cursor: pointer; }
+  .tpreset.active { border-color: var(--accent); color: var(--accent); }
+  .tpreset:hover { color: var(--text); }
+  .day-complete { margin-top: 26px; padding: 16px; border-radius: 10px; background: rgba(74,222,128,.08); border: 1px solid rgba(74,222,128,.35); display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .review-item { background: var(--panel); border: 1px solid var(--warn); border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .reveal-pat { font-size: 11.5px; padding: 4px 12px; border-radius: 6px; border: 1px solid var(--border); background: var(--panel2); color: var(--muted); cursor: pointer; }
+  .pattern-shown { color: var(--accent2); font-size: 13px; font-weight: 600; }
+  input.guess { background: var(--panel2); border: 1px solid var(--border); color: var(--text); padding: 6px 10px; border-radius: 6px; font-size: 13px; width: 200px; }
+  @media (max-width: 800px) { .sidebar { display: none; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="sidebar">
+    <div class="logo">
+      <h1>SDE-2 DSA Prep</h1>
+      <p>28-day roadmap · Target: Dec 7, 2026</p>
+    </div>
+    <div class="nav" id="nav"></div>
+  </div>
+  <div class="main">
+    <div class="topbar">
+      <div><h2 id="tb-title">Dashboard</h2><div class="sub" id="tb-sub"></div></div>
+      <div class="timer-box">
+        <span class="t" id="timer-display">45:00</span>
+        <button class="tpreset active" data-min="45">Concept 45m</button>
+        <button class="tpreset" data-min="90">Practice 90m</button>
+        <button class="tpreset" data-min="25">Review 25m</button>
+        <button class="btn small ghost" id="timer-toggle">Start</button>
+        <button class="btn small ghost" id="timer-reset">Reset</button>
+      </div>
+    </div>
+    <div class="content" id="content"></div>
+  </div>
+</div>
+
+<script>
+"use strict";
+/* ============================= DATA ============================= */
+const LC = s => "https://leetcode.com/problems/" + s + "/";
+const E="easy", M="med", H="hard";
+
+const DAYS = [
+{ id:1, week:1, title:"Arrays & Hashing — Foundational Intuition", topics:"Problem-solving method · Big-O · Arrays · Hash maps",
+lesson:`
+<h3>How to approach every DSA problem (the universal method)</h3>
+<p>Never jump straight to a clever solution. Follow this sequence every single time:</p>
+<ol>
+<li><b>Restate the problem</b> in your own words and walk through 2–3 small examples, including an edge case (empty input, single element, duplicates).</li>
+<li><b>Write the brute force.</b> Brute force is never wrong — it's your baseline and your correctness oracle. If you can't write brute force, you don't understand the problem yet.</li>
+<li><b>Analyze it.</b> Time and space complexity of the brute force. Identify <i>which specific work is wasted/repeated</i> as n grows.</li>
+<li><b>Find the exploitable property.</b> Is the data sorted? Are the values bounded? Do we only need counts, not order? Is the search space monotonic?</li>
+<li><b>Apply a technique</b> that removes the wasted work (hashing removes re-searching; sorting enables elimination; sliding windows avoid recomputation).</li>
+<li><b>Verify:</b> dry run on examples, check edge cases, state final complexity.</li>
+</ol>
+<h3>Concrete example of this process — Two Sum</h3>
+<p>Given <code>nums</code> and <code>target</code>, return indices of two numbers summing to target. Brute force: for each element, scan the rest → nested loops, <b>O(n²)</b> time, O(1) space. It works, but for n = 10⁵ that's ~10¹⁰ operations — too slow (a typical judge allows ~10⁸/sec).</p>
+<p><b>What's wasted?</b> For each <code>x</code>, we linearly search for <code>target − x</code> — the same search again and again. <b>What property helps?</b> We only need <i>existence and location</i> of a value, not order. That is exactly what a hash map gives in O(1) average: remember everything we've seen; for each new element, ask "have I seen your complement?" in constant time. Result: O(n) time, O(n) space — trading memory for speed.</p>
+<h3>Arrays</h3>
+<p>An array is contiguous memory: index access O(1), insert/delete in the middle O(n) (shifting). Appending at the end is amortized O(1). Strings in Python are immutable — "modifying" one costs O(n); convert to a list when mutating.</p>
+<h3>Hash maps &amp; hash sets</h3>
+<p>A hash map maps keys → values using a hash function into buckets. Average O(1) insert/lookup/delete; worst case O(n) with collisions (rare in practice). A hash set is a map that only stores presence.</p>
+<div class="callout"><b>When NOT to use hashing:</b> (1) You need keys in sorted order → use a sorted structure or sort first. (2) You need guaranteed worst-case latency (real-time systems). (3) The keys are huge/unhashable. (4) Memory is extremely tight — an O(1)-time array trick (bounded values, e.g. only lowercase letters → array of 26) is often better.</div>
+<p><b>Classic array+hashing patterns:</b> frequency counting (<code>Counter</code>), complement lookup (Two Sum), grouping by a canonical key (sorted string, first occurrence), seen-set for dedup.</p>`,
+guided:{title:"Two Sum — guided walkthrough",
+intuition:`We scan left to right. Before storing each element in <code>seen</code>, we first ask: does the complement (<code>target − x</code>) already exist in <code>seen</code>? Checking <i>before</i> inserting handles the case where the answer uses two equal values (e.g. target 6, nums [3,3]) without matching an element with itself. Because we look backwards only, each pair is examined exactly once in the right direction.`,
+code:`def twoSum(nums, target):
+    seen = {}                       # value -> index
+    for i, x in enumerate(nums):
+        if target - x in seen:      # complement seen earlier?
+            return [seen[target - x], i]
+        seen[x] = i                 # record AFTER checking
+    return []                       # problem guarantees a solution`,
+complexity:"Time O(n) — single pass, O(1) average per lookup. Space O(n) for the map. Edge cases: duplicates (handled by check-before-insert), no solution, negative numbers (irrelevant to hashing)."},
+practice:[
+{t:"Two Sum",s:"two-sum",d:E},{t:"Valid Anagram",s:"valid-anagram",d:E},
+{t:"Group Anagrams",s:"group-anagrams",d:M},{t:"Top K Frequent Elements",s:"top-k-frequent-elements",d:M},
+{t:"Product of Array Except Self",s:"product-of-array-except-self",d:M}],
+checks:["Why does checking for the complement BEFORE inserting the current element guarantee we never use the same index twice?","Your teammate says 'hash maps are always O(1), so Two Sum with a map beats the sorted two-pointer version in every case.' When is the sorted + two-pointer version (O(n log n), O(1) extra space) actually the better interview answer?"]},
+
+{ id:2, week:1, title:"Prefix Sums & Difference Arrays", topics:"Prefix sums · Range queries · Difference arrays",
+lesson:`
+<h3>The underlying problem</h3>
+<p>You're given an array and asked range-sum queries: "what is the sum of elements from index l to r?" — possibly thousands of times. Brute force: sum the range each time → O(n) per query, O(n·q) total. For n = q = 10⁵, that's 10¹⁰ operations. <b>Wasted work:</b> every query re-adds overlapping regions.</p>
+<h3>Prefix sums</h3>
+<p>Precompute <code>P[i] = nums[0] + … + nums[i−1]</code> (with P[0] = 0) in O(n). Then any range sum is <code>P[r+1] − P[l]</code> in O(1). This is the purest example of <b>precomputation / trade space for time</b>. The trick generalizes: prefix XOR, prefix max, prefix count of a condition, 2D prefix sums (inclusion–exclusion for submatrix sums).</p>
+<h3>Difference arrays — the inverse idea</h3>
+<p>Prefix sums answer many read-queries after few writes. A <b>difference array</b> handles many <i>range-add</i> writes followed by few reads: to add <code>v</code> to every element in [l, r], do <code>diff[l] += v; diff[r+1] −= v</code> — O(1) per update. Take the prefix sum of diff at the end to materialize the final array.</p>
+<div class="callout warn"><b>When prefix sums fail:</b> if the array itself is being modified between queries, a plain prefix array breaks (recompute = O(n)). Then you need a Fenwick/segment tree (Day 24). Also, "longest subarray with sum exactly k" needs prefix sums <i>plus hashing</i> — a prefix sum alone doesn't find subarrays.</div>
+<h3>The key subarray identity</h3>
+<p>Sum of subarray (i, j] = P[j+1] − P[i]. Therefore a subarray with sum k ending at j exists iff some earlier prefix equals <code>P[j+1] − k</code>. Store prefix values in a hash map → count subarrays with sum k in O(n). This fusion (prefix + hashing) is a top-tier interview pattern.</p>`,
+guided:{title:"Subarray Sum Equals K — guided walkthrough",
+intuition:`We want the number of contiguous subarrays summing to k. As we scan, maintain the running prefix sum. A subarray ending at the current position with sum k exists iff a previous prefix equalled <code>prefix − k</code>. So keep a hash map: prefix value → how many times it has occurred. Initialize <code>{0: 1}</code> — the empty prefix — so subarrays starting at index 0 are counted.`,
+code:`def subarraySum(nums, k):
+    count = 0
+    prefix = 0
+    freq = {0: 1}                   # empty prefix seen once
+    for x in nums:
+        prefix += x
+        count += freq.get(prefix - k, 0)  # earlier prefixes that complete sum k
+        freq[prefix] = freq.get(prefix, 0) + 1
+    return count`,
+complexity:"Time O(n), space O(n). Edge cases: negative numbers (works fine — this is why sliding window would FAIL here), k = 0, empty array. Note: freq must count occurrences, not just presence, because equal prefixes repeat."},
+practice:[
+{t:"Range Sum Query – Immutable",s:"range-sum-query-immutable",d:E},
+{t:"Find Pivot Index",s:"find-pivot-index",d:E},
+{t:"Subarray Sum Equals K",s:"subarray-sum-equals-k",d:M},
+{t:"Range Addition",s:"range-addition",d:M},
+{t:"Car Pooling",s:"car-pooling",d:M}],
+checks:["Why must the frequency map be initialized with {0: 1} instead of empty? Give a concrete input where omitting it gives a wrong answer.","Car Pooling can be solved with a difference array. Why is a plain prefix-sum array the wrong tool if passengers could drop off at a station you process later (i.e., updates arrive interleaved with queries)?"]},
+
+{ id:3, week:1, title:"Two Pointers", topics:"Opposite-direction · Same-direction · Elimination logic",
+lesson:`
+<h3>The underlying problem</h3>
+<p>Sorted array, find a pair summing to target. Brute force: all pairs, O(n²). We test (a₁,a₂), (a₁,a₃), … even when the first result already tells us those are impossible. <b>The wasted work is testing pairs that sorted order has already ruled out.</b></p>
+<h3>The core idea: elimination, not search</h3>
+<p>Sorted order gives a decision at every step. Put one pointer at each end. If <code>nums[l] + nums[r] > target</code>, then <code>nums[r]</code> is too big to pair with <i>anything</i> (nums[l] is the smallest remaining partner) → discard r permanently. If the sum is too small, discard l. Each comparison eliminates one element → at most n steps, O(n) total. The invariant: <i>the answer pair, if it exists, always lies between l and r inclusive.</i></p>
+<h3>Recognize it by the property, not the keyword</h3>
+<ul>
+<li><b>Opposite-direction (converging):</b> sorted input + pair/partition goal (pair sum, palindrome check, container with most water, 3Sum inner loop, Dutch flag partitioning).</li>
+<li><b>Same-direction (read/write):</b> in-place filtering/dedup — a slow "writer" pointer and fast "reader" pointer (Remove Duplicates, Move Zeroes, merging).</li>
+<li><b>Two sequences:</b> one pointer per array (merge step of merge sort, intersection of sorted arrays).</li>
+</ul>
+<div class="callout warn"><b>When NOT to use:</b> unsorted data without sorting first (then it's O(n log n), and hashing may beat it); when you need all pairs, not just existence; when the elimination logic doesn't hold — e.g., if the sum depends on values in a non-monotonic way you cannot discard safely.</div>`,
+guided:{title:"Two Sum II (sorted input) — guided walkthrough",
+intuition:`With sorted input, the converging-pointer elimination works: too-large sum means the right value can never work (its smallest possible partner is nums[l]); too-small means the left value can never work. Every step removes one candidate from consideration forever — that's what makes it O(n) and provably correct.`,
+code:`def twoSum(numbers, target):
+    l, r = 0, len(numbers) - 1
+    while l < r:
+        s = numbers[l] + numbers[r]
+        if s == target:
+            return [l + 1, r + 1]   # 1-indexed per problem
+        elif s < target:
+            l += 1                  # nums[l] too small for ANY partner
+        else:
+            r -= 1                  # nums[r] too large for ANY partner
+    return []`,
+complexity:"O(n) time, O(1) space — strictly better than the hash-map version when the array is already sorted. Edge cases: two equal values (l and r converge onto them correctly), no solution, single-element array (loop never runs)."},
+practice:[
+{t:"Two Sum II – Input Array Is Sorted",s:"two-sum-ii-input-array-is-sorted",d:M},
+{t:"Valid Palindrome",s:"valid-palindrome",d:E},
+{t:"Remove Duplicates from Sorted Array",s:"remove-duplicates-from-sorted-array",d:E},
+{t:"Container With Most Water",s:"container-with-most-water",d:M},
+{t:"3Sum",s:"3sum",d:M}],
+checks:["In Container With Most Water, when you move the pointer at the shorter line, why is it safe to discard that line entirely? What are you 'proving' with that move?","Why does the converging-pointer Two Sum break on an unsorted array, and what is the total complexity if you sort first versus using a hash map?"]},
+
+{ id:4, week:1, title:"Sliding Window", topics:"Fixed window · Variable window · Window invariants",
+lesson:`
+<h3>The underlying problem</h3>
+<p>Longest substring without repeating characters. Brute force: check every substring for uniqueness → O(n²) substrings × O(n) check = O(n³) (or O(n²) with a per-start set). <b>Wasted work:</b> when we extend the start position by one, we re-scan almost the entire window from scratch.</p>
+<h3>The idea: a window that never restarts</h3>
+<p>Observation: if substring [i, j] is invalid, any substring containing it is also invalid (for constraints that are monotone under extension). So maintain a window [left, right]: expand right one step at a time; when the constraint breaks, advance left just enough to restore it. Each index enters and leaves the window at most once → O(n) total, even though the loop structure looks nested.</p>
+<h3>Two shapes</h3>
+<ul>
+<li><b>Fixed-size window</b> (size k): maintain the window sum/count incrementally — add the entering element, subtract the leaving one. Answer = best window over all positions. O(n).</li>
+<li><b>Variable window:</b> "longest subarray satisfying P" — expand freely, shrink only when P breaks, record best. "Shortest subarray satisfying P" — expand until P holds, shrink while it still holds, record best. The two directions are mirror images.</li>
+</ul>
+<div class="callout"><b>The invariant is everything.</b> For "longest substring with at most k distinct chars": the window ALWAYS satisfies the constraint after every shrink step, and left only moves forward. If you can't state your window's invariant, your solution is probably wrong.</div>
+<div class="callout warn"><b>When sliding window FAILS:</b> negative numbers. "Shortest subarray with sum ≥ k" with negatives breaks the monotonicity that makes shrinking safe — you need a monotonic deque instead. Also fails when validity isn't monotone under extension.</div>`,
+guided:{title:"Longest Substring Without Repeating Characters — guided walkthrough",
+intuition:`Window [left, right] always contains distinct characters. When we hit a character last seen inside the current window, we must jump left past that previous occurrence (never backward — that's the amortized O(n) guarantee). Tracking the last index of every character lets left jump in O(1) instead of crawling.`,
+code:`def lengthOfLongestSubstring(s):
+    last = {}            # char -> last index seen
+    left = 0
+    best = 0
+    for right, ch in enumerate(s):
+        if ch in last and last[ch] >= left:   # duplicate INSIDE window
+            left = last[ch] + 1               # jump past it
+        last[ch] = right
+        best = max(best, right - left + 1)
+    return best`,
+complexity:"O(n) time — left and right each move forward at most n times total. O(min(n, alphabet)) space. Edge cases: empty string, all-identical chars, the '>= left' guard is critical: a char seen before but outside the window must NOT shrink left."},
+practice:[
+{t:"Best Time to Buy and Sell Stock",s:"best-time-to-buy-and-sell-stock",d:E},
+{t:"Maximum Average Subarray I",s:"maximum-average-subarray-i",d:E},
+{t:"Longest Substring Without Repeating Characters",s:"longest-substring-without-repeating-characters",d:M},
+{t:"Longest Repeating Character Replacement",s:"longest-repeating-character-replacement",d:M},
+{t:"Minimum Window Substring",s:"minimum-window-substring",d:H}],
+checks:["In 'Longest Repeating Character Replacement', the window is valid while (window length − count of most frequent char) ≤ k. Some solutions never shrink the window (only grow it). Why does that still return the correct maximum length?","Give a concrete input with negative numbers where a variable sliding window gives a wrong answer for 'shortest subarray with sum ≥ 7', and explain exactly which monotonicity assumption breaks."]},
+
+{ id:5, week:1, title:"Binary Search", topics:"Invariant thinking · Rotated arrays · Search on answer (preview)",
+lesson:`
+<h3>The underlying problem</h3>
+<p>Guess a number 1–1000 with "higher/lower" feedback. Linear scan = up to 1000 guesses. Each answer eliminates exactly one candidate. But each comparison actually splits the space into two parts and tells you which part survives → halve every time → ~10 guesses. Binary search = <b>guaranteed elimination of half the search space per step</b>, requiring O(log n) steps.</p>
+<h3>Invariant-driven implementation (never memorize templates)</h3>
+<p>Every correct binary search has a loop invariant: "if the target exists, it lies within [lo, hi]". Write the update so the invariant survives. Two common shapes: <i>exact match</i> (return when found, terminate lo > hi) and <i>boundary search</i> (shrink until lo == hi; check the predicate, keep the half that could still contain the answer). 90% of interview bugs are off-by-one from a broken invariant — so state yours out loud.</p>
+<h3>The predicate pattern (the real superpower)</h3>
+<p>Generalized binary search works on any <b>monotone predicate</b>: a question whose answer is FFF...FTTT... or TTT...TFFF... over an ordered space. Find the boundary. Examples: "is speed ≥ s enough to finish in h hours?" (Koko) — false for small s, true for large s. Search the <i>answer space</i>, not the array (full treatment Day 23).</p>
+<h3>Rotated sorted arrays</h3>
+<p>A rotated sorted array has one "pivot". Key insight: for any midpoint, at least one half is properly sorted. Compare <code>nums[lo] ≤ nums[mid]</code> to identify the sorted half; check whether the target lies in that half's range; discard accordingly. The invariant survives rotation.</p>
+<div class="callout warn"><b>When NOT to use:</b> unsorted, non-monotone data; when O(n) hashing answers an exact-match query in one pass and n is small; when the predicate isn't monotone (then binary search is simply wrong, not just slow).</div>`,
+guided:{title:"Koko Eating Bananas — guided walkthrough",
+intuition:`Define feasible(s) = "eating speed s finishes all piles within h hours". If s works, every larger speed works (monotone!). We binary-search the smallest feasible s in [1, max(piles)]. Hours for a pile at speed s = ceil(pile / s) = (pile + s − 1) // s.`,
+code:`def minEatingSpeed(piles, h):
+    def feasible(s):
+        return sum((p + s - 1) // s for p in piles) <= h
+
+    lo, hi = 1, max(piles)
+    while lo < hi:                   # find leftmost feasible
+        mid = (lo + hi) // 2
+        if feasible(mid):
+            hi = mid                 # mid works; answer is mid or smaller
+        else:
+            lo = mid + 1             # mid too slow; strictly larger needed
+    return lo`,
+complexity:"O(n log m) where m = max(pile). Space O(1). Invariant: lo−1 is always infeasible (or lo=1), hi always feasible. Loop ends when they meet at the boundary. Edge cases: h == len(piles) (answer = max pile), single pile."},
+practice:[
+{t:"Binary Search",s:"binary-search",d:E},
+{t:"Search Insert Position",s:"search-insert-position",d:E},
+{t:"Koko Eating Bananas",s:"koko-eating-bananas",d:M},
+{t:"Find Minimum in Rotated Sorted Array",s:"find-minimum-in-rotated-sorted-array",d:M},
+{t:"Search in Rotated Sorted Array",s:"search-in-rotated-sorted-array",d:M}],
+checks:["In the boundary-search template, why does 'while lo < hi' with 'hi = mid' (not mid − 1) guarantee termination? What breaks if you write 'hi = mid − 1' when feasible(mid) is true?","For Search in Rotated Sorted Array, explain how you decide which half to discard at each step, and give a 3-element input where nums[lo] == nums[mid] makes that decision ambiguous (the duplicates variant)."]},
+
+{ id:6, week:1, title:"Linked Lists", topics:"Dummy nodes · In-place reversal · Fast & slow pointers",
+lesson:`
+<h3>Why linked lists exist</h3>
+<p>Trade random access for cheap structural edits. Array: O(1) index access, O(n) middle insert/delete. Linked list: O(n) access, O(1) insert/delete <i>given the node</i>. The list is defined recursively: a node is (value, next). Almost every list problem is solved by carefully manipulating <code>next</code> pointers — and by drawing boxes and arrows first.</p>
+<h3>Three essential tools</h3>
+<ul>
+<li><b>Dummy (sentinel) node:</b> a fake node before head removes ALL "is this the head?" special cases — for merging, removal, and partitioning. Return <code>dummy.next</code>. Use it reflexively.</li>
+<li><b>In-place reversal:</b> walk with <code>prev</code> behind you, flipping each next pointer. Memorize the three-way assignment, understand why order matters.</li>
+<li><b>Fast &amp; slow pointers:</b> slow moves 1, fast moves 2. When fast reaches the end, slow is at the middle. With a cycle, they must eventually collide (pigeonhole: fast gains one position per step inside the loop). Floyd's algorithm: after collision, restart one pointer at head; they meet at the cycle entry.</li>
+</ul>
+<div class="callout"><b>Interview technique:</b> for any list problem, before coding, draw 4 nodes and trace pointer changes. Most list bugs are pointer-assignment ordering bugs, not conceptual ones. Python tuple assignment (<code>a.next, prev, a = prev, a, a.next</code>) evaluates the right side first — exploit it.</div>
+<div class="callout warn"><b>When a linked list is the wrong structure:</b> needing index access, binary search, or cache-friendly iteration. LRU Cache = hash map (O(1) lookup) + doubly linked list (O(1) move-to-front/evict) — the canonical hybrid.</div>`,
+guided:{title:"Reverse Linked List + middle/cycle toolkit — guided walkthrough",
+intuition:`Reversal: keep three mental slots — <code>prev</code> (already-reversed portion), <code>curr</code>, and <code>curr.next</code> (about to be lost). Flip curr.next to prev FIRST (before advancing), or you lose the rest of the list. The dummy-free version works because prev starts as None, which correctly becomes the new tail's next.`,
+code:`def reverseList(head):
+    prev = None
+    while head:
+        head.next, prev, head = prev, head, head.next
+        # right side evaluated fully BEFORE any assignment
+    return prev
+
+def middle(head):                    # fast & slow
+    slow = fast = head
+    while fast and fast.next:
+        slow, fast = slow.next, fast.next.next
+    return slow                      # middle (2nd middle if even length)
+
+def hasCycle(head):                  # Floyd's tortoise & hare
+    slow = fast = head
+    while fast and fast.next:
+        slow, fast = slow.next, fast.next.next
+        if slow is fast:
+            return True
+    return False`,
+complexity:"All three: O(n) time, O(1) space. Reversal edge cases: empty list (returns None), single node. Middle: even-length convention matters — this returns the second middle; adjust the loop guard to return the first. Cycle: use 'is' not '==' in Python (nodes may have weird __eq__)."},
+practice:[
+{t:"Reverse Linked List",s:"reverse-linked-list",d:E},
+{t:"Merge Two Sorted Lists",s:"merge-two-sorted-lists",d:E},
+{t:"Linked List Cycle",s:"linked-list-cycle",d:E},
+{t:"Remove Nth Node From End of List",s:"remove-nth-node-from-end-of-list",d:M},
+{t:"Reorder List",s:"reorder-list",d:M},
+{t:"LRU Cache",s:"lru-cache",d:M}],
+checks:["Explain why fast & slow pointers must collide if there's a cycle — what is the mathematical argument for the gap closing?","After they collide inside the cycle, why does moving one pointer back to head and advancing both by 1 make them meet exactly at the cycle's entry node? Derive it with distances d (to cycle) and k (entry to collision point)."]},
+
+{ id:7, week:1, title:"Stacks & Monotonic Stacks", topics:"LIFO patterns · Next-greater · Amortized analysis",
+lesson:`
+<h3>The underlying problem</h3>
+<p>"For each day's temperature, how many days until a warmer one?" Brute force: for each day, scan forward → O(n²). <b>Wasted work:</b> while scanning forward for day i, we pass days whose answers day i−1 also needed — the information is recomputed per starting point.</p>
+<h3>Stack fundamentals</h3>
+<p>LIFO = most-recent-first. That makes a stack the natural structure for: matched/nested structure (balanced parentheses), undo/backtracking of choices (DFS — Day 12), expression evaluation, and "most recent unresolved item" bookkeeping.</p>
+<h3>Monotonic stack — the elimination structure</h3>
+<p>Maintain a stack whose values are strictly increasing (or decreasing) from bottom to top. New element x "resolves" (pops) every stack element that x beats — those elements have just found their <i>next greater element</i>: x. Then x waits on the stack for its own resolver.</p>
+<p><b>Why O(n):</b> each element is pushed exactly once and popped at most once — total operations ≤ 2n. This is amortized analysis: individual steps may pop many elements, but summed over the run, cost per element is O(1).</p>
+<ul>
+<li><b>Next greater (right):</b> decreasing stack, pop while top &lt; x.</li>
+<li><b>Next smaller:</b> increasing stack. <b>Previous greater (left):</b> scan right-to-left.</li>
+<li><b>Largest Rectangle in Histogram:</b> increasing stack of indices; a shorter bar resolves taller bars — compute their maximal rectangles at pop time.</li>
+</ul>
+<div class="callout warn"><b>When NOT to use:</b> if the answer requires comparing elements across arbitrary distances in unstructured ways, or if a simple backwards scan with one variable suffices (e.g., running maximum). Don't stack-ify what a loop already does in O(n) with O(1) space.</div>
+<p><b>Monotonic queue</b> (Deque, sliding-window max): same amortized idea but pops from BOTH ends — the front expires when it leaves the window, the back is beaten by newcomers. Each element enters and leaves once → O(n).</p>`,
+guided:{title:"Daily Temperatures — guided walkthrough",
+intuition:`Stack holds indices of days still waiting for a warmer day; their temperatures are strictly decreasing from bottom to top. A new warm day resolves every colder waiting day at once. Each index is pushed once, popped at most once → linear total work despite the nested while loop.`,
+code:`def dailyTemperatures(T):
+    res = [0] * len(T)
+    stack = []                       # indices; T[stack] strictly decreasing
+    for i, t in enumerate(T):
+        while stack and T[stack[-1]] < t:
+            j = stack.pop()          # day j just found its warmer day
+            res[j] = i - j
+        stack.append(i)              # day i now waits
+    return res                       # leftovers stay 0 (never warmer)`,
+complexity:"O(n) time amortized (≤ 2n stack ops), O(n) space. Edge cases: strictly decreasing input (nothing ever pops until the end), all-equal input (nothing pops — strictly less-than is essential), empty array."},
+practice:[
+{t:"Valid Parentheses",s:"valid-parentheses",d:E},
+{t:"Min Stack",s:"min-stack",d:M},
+{t:"Next Greater Element I",s:"next-greater-element-i",d:E},
+{t:"Daily Temperatures",s:"daily-temperatures",d:M},
+{t:"Largest Rectangle in Histogram",s:"largest-rectangle-in-histogram",d:H}],
+checks:["In Daily Temperatures, prove the total work is O(n) even though the inner while loop can pop many elements in a single iteration.","For Largest Rectangle in Histogram, why must you append a sentinel bar of height 0 at the end? What answers would be wrong without it — give a concrete histogram."]},
+
+{ id:8, week:2, title:"Trees & Binary Search Trees", topics:"Traversals · BST invariant · DFS returns",
+lesson:`
+<h3>The underlying problem</h3>
+<p>A tree stores hierarchical data with no cycles: n nodes, n−1 edges, exactly one path between any two nodes. The power: every subtree is itself a tree → <b>every tree algorithm is a recursive statement about a node and its subtrees</b>. If you can define what a node should compute from its children, you can solve the problem.</p>
+<h3>Traversals — know these cold</h3>
+<ul>
+<li><b>DFS preorder</b> (node, left, right) — create/copy trees, top-down passes.</li>
+<li><b>DFS inorder</b> (left, node, right) — visits a BST in sorted order; the backbone of BST problems.</li>
+<li><b>DFS postorder</b> (left, right, node) — aggregate from bottom up (heights, sums, balances).</li>
+<li><b>BFS / level order</b> — queue; process level by level. Know the "capture queue size at loop start" idiom to separate levels.</li>
+</ul>
+<h3>BST invariant</h3>
+<p>Every value in the left subtree &lt; node &lt; every value in the right subtree — recursively, not just immediate children. Consequences: inorder = sorted; search/insert/delete in O(h); the answer to LCA is the first node where the two targets split; kth smallest = kth inorder visit.</p>
+<div class="callout warn"><b>Classic bug:</b> validating a BST by checking only node.left.val &lt; node.val &lt; node.right.val. WRONG — a deep node can violate an ancestor far above. You must pass down (min, max) bounds, or validate against the inorder predecessor/successor. Also: a skewed BST degrades to a linked list, height O(n) — that's why self-balancing trees exist.</div>`,
+guided:{title:"Binary Tree Level Order Traversal — guided walkthrough",
+intuition:`BFS with a queue, but the level structure requires knowing where each level ends. Idiom: record the queue length at the start of each round — that count is exactly the current level's size; process only that many nodes (their children queue up for the NEXT round).`,
+code:`from collections import deque
+
+def levelOrder(root):
+    if not root:
+        return []
+    q, out = deque([root]), []
+    while q:
+        level = []
+        for _ in range(len(q)):      # freeze current level size
+            node = q.popleft()
+            level.append(node.val)
+            if node.left:  q.append(node.left)
+            if node.right: q.append(node.right)
+        out.append(level)
+    return out`,
+complexity:"O(n) time (each node enqueued once), O(w) space where w = max level width (up to n/2 for a complete tree). Edge cases: empty tree, single node."},
+practice:[
+{t:"Maximum Depth of Binary Tree",s:"maximum-depth-of-binary-tree",d:E},
+{t:"Invert Binary Tree",s:"invert-binary-tree",d:E},
+{t:"Binary Tree Level Order Traversal",s:"binary-tree-level-order-traversal",d:M},
+{t:"Validate Binary Search Tree",s:"validate-binary-search-tree",d:M},
+{t:"Lowest Common Ancestor of a BST",s:"lowest-common-ancestor-of-a-binary-search-tree",d:M},
+{t:"Kth Smallest Element in a BST",s:"kth-smallest-element-in-a-bst",d:M}],
+checks:["Give a small tree that passes the naive node-local BST check (parent vs children only) but is not a valid BST. Then show how (min, max) bounds catch it.","When would you choose BFS over DFS for a tree problem, in terms of what the problem asks and memory profile? Consider a 10⁶-deep path versus a 10⁶-wide tree."]},
+
+{ id:9, week:2, title:"Tree Patterns II — Paths, Construction, Serialization", topics:"Global vs local answers · Building trees",
+lesson:`
+<h3>The most important tree pattern: return value vs global answer</h3>
+<p>Many tree problems need TWO different quantities: (a) what each recursive call returns to its parent, and (b) the global best answer. Example — Diameter: each call returns <i>height</i> (the longest downward path from this node), but the answer updates with <i>left_height + right_height</i> (paths that bend through the node). Confusing these two is the #1 tree-problem bug. Pattern:</p>
+<pre>def dfs(node):
+    # compute local info; update nonlocal/global best
+    return what_parent_needs   # often DIFFERENT from the best</pre>
+<p>Same shape appears in: Balanced Tree (return height, flag imbalance), Max Path Sum (return best downward gain, answer bends), Count Good Nodes (pass max-so-far down), Binary Tree Maximum Path Sum.</p>
+<h3>Construction from traversals</h3>
+<p>Preorder's first element is the root. Find it in the inorder sequence — everything left of it is the left subtree, everything right is the right subtree. Recurse. (Preorder + inorder, or postorder + inorder, uniquely determine a tree; preorder + postorder do not — unless the tree is full.)</p>
+<h3>Serialization</h3>
+<p>Encode with preorder including null markers (e.g. '#'); decode by consuming tokens with an iterator in the same order. The null markers are what make the tree unambiguous.</p>
+<div class="callout"><b>Right-side view:</b> BFS taking the last node of each level, or DFS visiting right first and recording the first node at each new depth. One line of insight converts a level problem into a depth problem.</div>`,
+guided:{title:"Diameter of Binary Tree — guided walkthrough",
+intuition:`Longest path between any two nodes = for some node, (height of left subtree) + (height of right subtree). Each dfs call returns height (edges: 1 + max(l, r), with None → −1 or 0 depending on convention), and while unwinding, updates a global best with l + r through the current node.`,
+code:`def diameterOfBinaryTree(root):
+    best = 0
+
+    def height(node):                # returns height in EDGES
+        nonlocal best
+        if not node:
+            return -1                # empty subtree contributes -1
+        l = height(node.left) + 1    # edge to left child
+        r = height(node.right) + 1
+        best = max(best, l + r)      # path bending through node
+        return max(l, r)
+
+    height(root)
+    return best`,
+complexity:"O(n) time, O(h) recursion space. Edge cases: single node (diameter 0), empty tree. Convention check: with edges, a leaf has height 0, so None must be −1 — pick a convention and stay consistent."},
+practice:[
+{t:"Binary Tree Right Side View",s:"binary-tree-right-side-view",d:M},
+{t:"Count Good Nodes in Binary Tree",s:"count-good-nodes-in-binary-tree",d:M},
+{t:"Diameter of Binary Tree",s:"diameter-of-binary-tree",d:E},
+{t:"Construct Binary Tree from Preorder and Inorder Traversal",s:"construct-binary-tree-from-preorder-and-inorder-traversal",d:M},
+{t:"Serialize and Deserialize Binary Tree",s:"serialize-and-deserialize-binary-tree",d:H}],
+checks:["For Binary Tree Maximum Path Sum with possible negative values, why must the return value to the parent be clamped (max(node + max(l, r), 0)-style), while the global answer uses the unclamped bend?","Why do preorder + postorder traversals fail to uniquely determine a tree? Draw the two distinct trees sharing the same traversals."]},
+
+{ id:10, week:2, title:"Heaps / Priority Queues", topics:"Top-K · Two heaps · Heapify vs push-all",
+lesson:`
+<h3>The underlying problem</h3>
+<p>"Find the k largest of n elements." Options: sort everything O(n log n) and take k; or maintain a collection of the k best seen so far. When streaming (or when k ≪ n), sorting is wasteful — you only ever need the WEAKEST of the current top-k to decide eviction. That's a min-heap of size k.</p>
+<h3>Heap mechanics</h3>
+<p>A binary heap is a complete binary tree in an array: children of i are 2i+1, 2i+2. Min-heap invariant: parent ≤ children. Push and pop restore the invariant by sifting up/down in O(log n); peek is O(1). Building from n items by heapify is O(n) (not O(n log n)) — because most nodes sift down only a short distance.</p>
+<h3>Recognize heap problems</h3>
+<ul>
+<li><b>Top-K / K-closest / K-most-frequent:</b> heap of size k (min-heap for "largest k"). O(n log k).</li>
+<li><b>Repeating "give me the current min/max" with insertions:</b> Last Stone Weight, task scheduling, merge k sorted lists (Day 24).</li>
+<li><b>Two heaps (running median):</b> max-heap for the lower half, min-heap for the upper; rebalance so sizes differ by ≤ 1. Median = top(s) of the bigger heap.</li>
+<li><b>Greedy with a priority queue:</b> repeatedly extract the best current option (Dijkstra — Day 19).</li>
+</ul>
+<div class="callout warn"><b>When NOT to use a heap:</b> you need sorted output of everything (just sort); you need to delete arbitrary elements (heaps can't find them — a hash map + lazy deletion, or a balanced BST / sorted list, is needed); "smallest k of a static array" where quickselect gives average O(n).</div>
+<p><b>Python:</b> <code>heapq</code> is a min-heap. For max-heap, negate values. For objects, push <code>(key, tiebreak, obj)</code> tuples — heapq compares tuples, and the tiebreak (e.g., index) prevents comparing non-comparable objects.</p>`,
+guided:{title:"Kth Largest Element in an Array — guided walkthrough",
+intuition:`Keep a MIN-heap of size k holding the k largest so far. Any new element smaller than the heap's min can't be in the top k — ignore it. Any element larger evicts the min. At the end, the heap's min IS the kth largest. Counter-intuitive but crucial: top-k-largest uses a MIN-heap (the root is the eviction candidate).`,
+code:`import heapq
+
+def findKthLargest(nums, k):
+    heap = nums[:k]                  # seed with first k
+    heapq.heapify(heap)              # O(k)
+    for x in nums[k:]:
+        if x > heap[0]:              # beats the weakest of top-k?
+            heapq.heapreplace(heap, x)   # pop root + push, one sift
+    return heap[0]                   # smallest of the top-k`,
+complexity:"O(n log k) time, O(k) space — beats O(n log n) sorting when k is small. Edge cases: k == n (heap never replaces), duplicates (fine — strict '>' just skips equals, still correct)."},
+practice:[
+{t:"Last Stone Weight",s:"last-stone-weight",d:E},
+{t:"Kth Largest Element in an Array",s:"kth-largest-element-in-an-array",d:M},
+{t:"K Closest Points to Origin",s:"k-closest-points-to-origin",d:M},
+{t:"Task Scheduler",s:"task-scheduler",d:M},
+{t:"Find Median from Data Stream",s:"find-median-from-data-stream",d:H}],
+checks:["Why is a min-heap of size k the right structure for 'k largest', not a max-heap? What goes wrong if you use a max-heap of size k?","For Find Median from Data Stream, state the two invariants the two heaps must satisfy after every insertion, and what the median is when total count is odd vs even."]},
+
+{ id:11, week:2, title:"Tries", topics:"Prefix trees · Prefix queries · DFS + trie fusion",
+lesson:`
+<h3>The underlying problem</h3>
+<p>You have 10⁵ words and must repeatedly ask: "is X a word?", "does any word start with P?", or "walk a grid and match any word." A hash set answers exact lookup in O(|X|) — but prefix questions fail: you can't hash a prefix. A sorted list + binary search finds prefix ranges, but each query is O(|P| log n) and insertion is O(n). <b>The structure that matches the query shape (prefixes) is the trie.</b></p>
+<h3>Structure</h3>
+<p>A trie (prefix tree) is a tree where each edge is a character and each node marks whether a word ends there. Words sharing a prefix share a path. Insert/search/prefix-check: walk character by character — <b>O(L)</b> where L is the word length, independent of how many words are stored.</p>
+<ul>
+<li>Node = <code>children</code> (dict or 26-array) + <code>is_end</code> flag.</li>
+<li>Word lookup: walk the path; node must exist AND is_end must be True.</li>
+<li>Prefix lookup: walk the path; existence is enough.</li>
+</ul>
+<div class="callout"><b>Why tries shine:</b> autocomplete, spell-check, IP routing (binary tries), word games. The killer interview combo: <b>trie + DFS on a board</b> (Word Search II) — instead of searching each word separately in the grid (O(words · board · L)), walk the board once, descending the trie in parallel and pruning the instant the current path is not a trie prefix.</div>
+<div class="callout warn"><b>When NOT to use:</b> exact-match lookups only (a hash set is simpler and faster); huge alphabet without a map; memory-sensitive contexts — tries have heavy per-node overhead (a dictionary per node). A sorted array of words + binary search can be more memory-efficient for static data.</div>`,
+guided:{title:"Implement Trie — guided walkthrough",
+intuition:`One shared _walk helper for search and startsWith: walk the path; return the final node or None. Search = walk succeeds AND node.is_end. startsWith = walk succeeds. Factoring the walk out removes duplicated logic — interviewers like it.`,
+code:`class Trie:
+    def __init__(self):
+        self.children = {}
+        self.is_end = False
+
+    def insert(self, word):
+        node = self
+        for ch in word:
+            node = node.children.setdefault(ch, Trie())
+        node.is_end = True
+
+    def search(self, word):
+        node = self._walk(word)
+        return node is not None and node.is_end
+
+    def startsWith(self, prefix):
+        return self._walk(prefix) is not None
+
+    def _walk(self, s):
+        node = self
+        for ch in s:
+            if ch not in node.children:
+                return None
+            node = node.children[ch]
+        return node`,
+complexity:"All operations O(L) time; space O(total characters) worst case, less with shared prefixes. Edge cases: inserting a word that is a prefix of an existing word (is_end on an internal node — that's why is_end is a flag, not a leaf property), empty string."},
+practice:[
+{t:"Implement Trie (Prefix Tree)",s:"implement-trie-prefix-tree",d:M},
+{t:"Design Add and Search Words Data Structure",s:"design-add-and-search-words-data-structure",d:M},
+{t:"Word Search II",s:"word-search-ii",d:H}],
+checks:["In Word Search II, explain exactly where the pruning happens: what trie check lets you abandon a board path early, and why does that turn O(W·R·C·4^L) into roughly O(R·C·4^L) at worst?","A trie node needs is_end even though every leaf could just mean 'end'. Give an example of two insertions where a node must be both internal AND an end-of-word."]},
+
+{ id:12, week:2, title:"Recursion & Backtracking", topics:"Decision trees · Choose-explore-unchoose · Pruning",
+lesson:`
+<h3>The underlying problem</h3>
+<p>Generate all subsets of [1,2,3]. There's no formula — the answer is an exhaustive enumeration of 2ⁿ possibilities. Brute force IS the solution; the only question is organizing the search. <b>Backtracking is structured brute force:</b> build candidates one decision at a time, explore, and undo.</p>
+<h3>The universal template</h3>
+<pre>def backtrack(state):
+    if is_complete(state):
+        record(copy_of(state)); return
+    for choice in choices_at(state):
+        apply(choice)           # choose
+        backtrack(state)        # explore
+        undo(choice)            # un-choose  (the "back" in backtracking)</pre>
+<p>Every backtracking problem = defining three things: the <b>state</b> (path so far + bookkeeping), the <b>choice set</b> at each step, and the <b>completion condition</b>.</p>
+<ul>
+<li><b>Subsets:</b> at index i, choose include or exclude nums[i]. Tree has 2ⁿ leaves.</li>
+<li><b>Permutations:</b> choice = any unused element; track used[] to avoid reuse; n! leaves.</li>
+<li><b>Combinations (size k):</b> choose next element from remaining suffix only (enforce increasing index) — kills duplicates structurally.</li>
+<li><b>Combination Sum (reuse allowed):</b> allow re-picking the same index; prune when remaining target &lt; smallest candidate.</li>
+</ul>
+<h3>Pruning = correctness-preserving speedups</h3>
+<p>Sort first (enables early cut-off in sum problems), skip duplicates at the same tree level (<code>if i &gt; start and nums[i] == nums[i-1]: continue</code>), abandon branches exceeding bounds. Pruning never changes the answer set — only the explored tree size.</p>
+<div class="callout warn"><b>When NOT to backtrack:</b> if subproblems overlap (same state reached by different paths), plain backtracking is exponential where DP is polynomial — that transition is Day 20. Also: if n &gt; ~25 for 2ⁿ-type search, look for a pattern instead. The constraint n ≤ 20 in a problem statement is a flashing hint for backtracking/bitmask.</div>`,
+guided:{title:"Subsets — guided walkthrough",
+intuition:`Each element poses one yes/no question. The recursion tree has depth n and 2ⁿ leaves; every root-to-leaf path is one subset. At each call we branch: skip nums[i], or append it, recurse, then pop it — restoring state for the sibling branch. The pop is not optional; without it, later branches inherit earlier choices.`,
+code:`def subsets(nums):
+    out = []
+
+    def backtrack(i, path):
+        if i == len(nums):
+            out.append(path[:])      # COPY - path keeps mutating
+            return
+        backtrack(i + 1, path)       # exclude nums[i]
+        path.append(nums[i])         # include nums[i]
+        backtrack(i + 1, path)
+        path.pop()                   # undo
+
+    backtrack(0, [])
+    return out`,
+complexity:"O(n · 2ⁿ) time (2ⁿ subsets, each copied in O(n)), O(n) recursion depth. THE classic bug: appending <code>path</code> without copying — all recorded subsets alias the same mutating list. Edge cases: empty input → [[]]."},
+practice:[
+{t:"Subsets",s:"subsets",d:M},
+{t:"Permutations",s:"permutations",d:M},
+{t:"Combination Sum",s:"combination-sum",d:M},
+{t:"Word Search",s:"word-search",d:M},
+{t:"Palindrome Partitioning",s:"palindrome-partitioning",d:M}],
+checks:["Why must you copy the path when recording an answer? Explain the aliasing bug precisely.","You sort nums before Combination Sum II and skip nums[i] == nums[i-1] when i > start. Why is the i > start condition essential — what valid solutions would you wrongly lose if you skipped at i == start?"]},
+
+{ id:13, week:2, title:"Divide & Conquer", topics:"Merge sort · Quickselect · Counting during merge",
+lesson:`
+<h3>The idea</h3>
+<p>Split the problem into independent subproblems, solve them recursively, and <b>merge</b> results. Different from backtracking (which explores choices) — here subproblems are disjoint halves, and the craft is in the merge step.</p>
+<ul>
+<li><b>Merge sort:</b> sort halves, merge in linear time. O(n log n) guaranteed, O(n) extra space, stable. The merge step is where extra work can be piggybacked: <b>counting inversions</b> or "count smaller elements to the right" while merging is a classic hard-interview trick.</li>
+<li><b>Quickselect:</b> partition (like quicksort) but recurse into only ONE side — the side containing the kth element. Average O(n), worst O(n²) (mitigate with random pivots). The standard answer for "kth smallest in O(n) average".</li>
+<li><b>Binary search</b> is divide &amp; conquer with a trivial merge (pick one half).</li>
+</ul>
+<div class="callout"><b>Recognize D&amp;C:</b> "count pairs (i, j) where i &lt; j and some condition across the halves" (inversions, reverse pairs); "closest pair of points"; problems where sorting the data reveals the answer and you can count while sorting. If counting pairs naively is O(n²) but a condition is monotone under sorting, D&amp;C-while-merging often drops it to O(n log n).</div>
+<div class="callout warn"><b>When NOT:</b> subproblems overlap (→ DP); the merge step itself is superlinear; or a simple sort + linear scan does the job. In an interview, always ask: "is the added complexity of D&amp;C buying me anything over sorting?"</div>`,
+guided:{title:"Sort an Array (merge sort) — guided walkthrough",
+intuition:`Halve, recursively sort, merge two sorted runs with two cursors. The merge is the entire algorithm: repeatedly take the smaller front element. Stability: take from the LEFT on ties (≤). Total: log n levels × O(n) merge per level.`,
+code:`def sortArray(nums):
+    if len(nums) <= 1:
+        return nums
+    mid = len(nums) // 2
+    left, right = sortArray(nums[:mid]), sortArray(nums[mid:])
+    out, i, j = [], 0, 0
+    while i < len(left) and j < len(right):
+        if left[i] <= right[j]:      # <= keeps sort stable
+            out.append(left[i]); i += 1
+        else:
+            out.append(right[j]); j += 1
+    out.extend(left[i:])
+    out.extend(right[j:])
+    return out`,
+complexity:"O(n log n) time at every level of luck (unlike quicksort), O(n) space for buffers + O(log n) recursion. Edge cases: empty/single (base case), all-equal elements."},
+practice:[
+{t:"Sort an Array",s:"sort-an-array",d:M},
+{t:"Pow(x, n)",s:"powx-n",d:M},
+{t:"Majority Element",s:"majority-element",d:E},
+{t:"Count of Smaller Numbers After Self",s:"count-of-smaller-numbers-after-self",d:H}],
+checks:["Explain quickselect's average O(n) analysis: why does recursing into only one half change the recurrence from T(n)=2T(n/2)+O(n) to T(n)=T(n/2)+O(n), and what input triggers the O(n²) worst case?","For Count of Smaller Numbers After Self, describe exactly what you count during the merge step of merge sort, and how indices must be tracked to report answers per original position."]},
+
+{ id:14, week:2, title:"Graphs I — Representation, BFS, DFS", topics:"Adjacency lists · Grid graphs · When BFS vs DFS",
+lesson:`
+<h3>What changes from trees to graphs</h3>
+<p>Any node can connect to any node: possible cycles, no root, possibly disconnected. Two consequences: (1) you need a <code>visited</code> set — without it, cycles cause infinite loops; (2) traversal order is a choice, not given.</p>
+<h3>Representation</h3>
+<p><b>Adjacency list</b> (dict of node → list of neighbors): O(V + E) space, iteration over neighbors is fast — the default. <b>Adjacency matrix</b> (V×V booleans): O(V²) space, O(1) edge check — only for dense graphs or tiny V. <b>Grids are implicit graphs:</b> cell (r,c) has up to 4 neighbors via (±1,0),(0,±1); build the adjacency on the fly instead of materializing it.</p>
+<h3>BFS vs DFS — the decision that matters</h3>
+<ul>
+<li><b>BFS (queue):</b> explores in rings of increasing distance → finds <b>shortest paths in unweighted graphs</b> (each edge cost 1). Use for: shortest path, level structure, minimum steps, "spread" processes (rotting oranges, infection).</li>
+<li><b>DFS (stack/recursion):</b> dives deep → use for: connectivity/components, cycle detection, topological order, path existence, anything where you must fully explore a region (flood fill, island area).</li>
+</ul>
+<div class="callout"><b>Golden rule:</b> "minimum number of steps/moves" in an unweighted graph ⇒ BFS, almost without exception. "Reachable / connected / count regions" ⇒ either, DFS is usually shorter to code. Weighted edges ⇒ neither (Dijkstra, Day 19).</div>
+<div class="callout warn"><b>Bugs that cost interviews:</b> marking visited when DEQUEUING instead of when ENQUEUEING (causes duplicate queue entries and exponential blowup); forgetting that grid characters are strings ('1' not 1) in LeetCode grid problems; mutating input grid to mark visited (acceptable, mention the trade-off); recursion depth on 10⁵-node paths in Python (use iterative DFS or BFS).</div>`,
+guided:{title:"Number of Islands — guided walkthrough",
+intuition:`An island = a connected component of '1' cells (4-directional). Count components: scan every cell; when you find an unvisited '1', that's a new island — increment and flood-fill (sink) its entire component so no cell is counted twice. Flood fill = DFS from the cell, flipping '1'→'0' as the visited marker.`,
+code:`def numIslands(grid):
+    rows, cols = len(grid), len(grid[0])
+
+    def sink(r, c):
+        if 0 <= r < rows and 0 <= c < cols and grid[r][c] == '1':
+            grid[r][c] = '0'                 # mark visited in place
+            for dr, dc in ((1,0),(-1,0),(0,1),(0,-1)):
+                sink(r + dr, c + dc)
+
+    count = 0
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == '1':
+                count += 1
+                sink(r, c)
+    return count`,
+complexity:"O(R·C) time — each cell is visited a constant number of times; O(R·C) worst-case recursion space (all land). Edge cases: all water, all land, single cell. Mention to the interviewer: mutating input — offer a visited[][] set if purity matters."},
+practice:[
+{t:"Flood Fill",s:"flood-fill",d:E},
+{t:"Number of Islands",s:"number-of-islands",d:M},
+{t:"Clone Graph",s:"clone-graph",d:M},
+{t:"Rotting Oranges",s:"rotting-oranges",d:M},
+{t:"Pacific Atlantic Water Flow",s:"pacific-atlantic-water-flow",d:M}],
+checks:["In Rotting Oranges, why must you use BFS (level-by-level) rather than DFS to compute the number of minutes correctly? What would a DFS-based timing get wrong?","In Clone Graph, why do you need the visited/clone map even in BFS? What infinite behavior does it prevent, given cycles in the graph?"]},
+
+{ id:15, week:3, title:"Greedy Algorithms", topics:"Exchange arguments · When greedy fails",
+lesson:`
+<h3>The idea — and the burden of proof</h3>
+<p>Greedy: at each step make the locally best choice and never reconsider. When it works, it's O(n log n) or O(n) — dramatically simpler than DP. But greedy is only valid when <b>local optimality implies global optimality</b>, and that must be argued, not assumed.</p>
+<h3>The standard proof tool: the exchange argument</h3>
+<p>Assume an optimal solution O differs from the greedy solution G. Show you can swap O's first differing choice for G's choice without making O worse — repeat until O = G. Hence greedy is optimal. Classic: interval scheduling (always take the interval that ENDS earliest — taking the earliest-ending one can never hurt, since it leaves maximum room).</p>
+<h3>Recognize greedy problems</h3>
+<ul>
+<li>"Maximum number of X you can pick/complete" with non-negative structure (intervals, tasks, jumps).</li>
+<li>A single pass with running state suffices: Maximum Subarray (Kadane: the best subarray ending here either extends the previous best or restarts), Jump Game (furthest reachable index only ever increases).</li>
+<li>Scheduling with a sort by a clever key: finish time, or ratio (value/weight).</li>
+</ul>
+<div class="callout warn"><b>When greedy FAILS — know counterexamples:</b> coin change with coins {1, 3, 4} and amount 6: greedy takes 4+1+1 (3 coins) but 3+3 is optimal (2). Any time a choice now can foreclose a better combination later, greedy is suspect — and DP is the fallback. In interviews: if you propose greedy, you MUST offer the exchange argument or a proof sketch; "it feels right" is a reject at SDE-2 level.</div>`,
+guided:{title:"Jump Game — guided walkthrough",
+intuition:`Track <code>reach</code> = the furthest index reachable so far. Scanning left to right: if the current index i is beyond reach, index i was never reachable → fail. Otherwise reach can only grow: reach = max(reach, i + nums[i]). Monotone quantity + single pass + no reconsideration = textbook greedy. The proof: reach is exact — every index ≤ reach is reachable.`,
+code:`def canJump(nums):
+    reach = 0
+    for i, x in enumerate(nums):
+        if i > reach:                # gap: i is unreachable
+            return False
+        reach = max(reach, i + x)
+        if reach >= len(nums) - 1:   # early exit
+            return True
+    return True                      # covers len(nums) == 1`,
+complexity:"O(n) time, O(1) space. Edge cases: single element (trivially True — you're already there), zero in the middle creating a gap, nums[0] == 0 with n > 1 → False."},
+practice:[
+{t:"Maximum Subarray",s:"maximum-subarray",d:M},
+{t:"Jump Game",s:"jump-game",d:M},
+{t:"Jump Game II",s:"jump-game-ii",d:M},
+{t:"Gas Station",s:"gas-station",d:M},
+{t:"Partition Labels",s:"partition-labels",d:M}],
+checks:["Give the exchange argument for why 'always take the earliest-finishing interval' maximizes the number of non-overlapping intervals.","Why does greedy coin change fail on {1, 3, 4}, amount 6, and what property of 'canonical' coin systems (like {1,5,10,25}) makes greedy correct for them?"]},
+
+{ id:16, week:3, title:"Intervals", topics:"Sorting strategy · Overlap conditions · Sweep line",
+lesson:`
+<h3>The underlying problem</h3>
+<p>Intervals [start, end): merge overlapping ones, count how many overlap at once, remove the minimum to make the rest disjoint. Brute force: compare all pairs O(n²). <b>Exploitable property: sort by start; then any interval that doesn't overlap the current merged block must come entirely after it — later intervals can never "reach back" before a smaller start.</b></p>
+<h3>Core facts to internalize</h3>
+<ul>
+<li>Two intervals a, b overlap iff <code>a.start &lt; b.end AND b.start &lt; a.end</code> (half-open). Closed intervals: ≤ instead of &lt;.</li>
+<li><b>Merge:</b> sort by start; extend the current block while the next interval starts before/at the block's end; otherwise start a new block.</li>
+<li><b>Min removals to be non-overlapping:</b> sort by END; greedily keep every interval that starts after the last kept one ends (earliest-finish greedy — Day 15's proof applies verbatim).</li>
+<li><b>Min groups/rooms (max concurrent intervals):</b> sweep line — turn each interval into events (+1 at start, −1 at end), sort events, track running count; the max is the answer. End events before start events at equal times (half-open).</li>
+</ul>
+<div class="callout"><b>Sweep line:</b> convert spatial/interval questions into a sequence of events on a timeline, process sorted, maintain running state. It generalizes far beyond intervals (Day 24). The mental shift: stop asking "how do pairs relate" — ask "what changes at each critical x-coordinate".</div>
+<div class="callout warn"><b>Sorting key matters:</b> merge/sort-by-start works; "min removals" and "max non-overlapping" need sort-by-END. Sorting the latter by start is a classic wrong answer — construct the counterexample and you'll never confuse them: e.g. [1,100], [2,3], [4,5] — by start you'd keep 1 interval, by end you keep 2.</div>`,
+guided:{title:"Merge Intervals — guided walkthrough",
+intuition:`After sorting by start, the merged blocks form left to right: a new interval either starts before the current block's end (merge — extend the end to max of the two ends) or after it (a gap — open a new block). Taking max of ends matters because a new interval can be NESTED inside the current block.`,
+code:`def merge(intervals):
+    intervals.sort()                  # by start, then end
+    out = []
+    for s, e in intervals:
+        if out and s <= out[-1][1]:   # overlaps current block
+            out[-1][1] = max(out[-1][1], e)   # nested-safe extend
+        else:
+            out.append([s, e])        # gap -> new block
+    return out`,
+complexity:"O(n log n) for the sort, O(n) scan, O(n) output space. Edge cases: touching intervals [1,4],[4,5] (overlap under half-open — clarify with interviewer!), single interval, fully nested intervals, unsorted input."},
+practice:[
+{t:"Insert Interval",s:"insert-interval",d:M},
+{t:"Merge Intervals",s:"merge-intervals",d:M},
+{t:"Interval List Intersections",s:"interval-list-intersections",d:M},
+{t:"Non-overlapping Intervals",s:"non-overlapping-intervals",d:M},
+{t:"Minimum Number of Arrows to Burst Balloons",s:"minimum-number-of-arrows-to-burst-balloons",d:M}],
+checks:["For Non-overlapping Intervals, construct a 3-interval example where sorting by start gives a worse answer than sorting by end, and explain why earliest-finish wins.","In Interval List Intersections, given pointers i and j with no overlap, explain exactly how you decide which pointer to advance and why that's safe (what are you discarding?)."]},
+
+{ id:17, week:3, title:"Disjoint Set Union (Union-Find)", topics:"Path compression · Union by rank · Dynamic connectivity",
+lesson:`
+<h3>The underlying problem</h3>
+<p>"Are x and y in the same group?" — with edges arriving one at a time and groups merging over time (friends merging networks, accounts merging emails, stones connected by rows/columns). BFS/DFS answers connectivity for a <i>static</i> graph in O(V+E) per query — recompute per merge = too slow. <b>DSU maintains merging groups in near-O(1) amortized per operation.</b></p>
+<h3>Mechanics</h3>
+<p>Each set is a tree of parent pointers; a set's identity is its root. <code>find(x)</code>: follow parents to the root. <code>union(a,b)</code>: point one root at the other.</p>
+<ul>
+<li><b>Path compression:</b> during find, re-point every visited node directly at the root — flattens the tree.</li>
+<li><b>Union by rank/size:</b> attach the smaller tree under the larger — keeps trees shallow.</li>
+<li>Together: amortized <b>O(α(n))</b> per op — inverse Ackermann, effectively ≤ 4 forever. State it in interviews; it's a strong signal.</li>
+</ul>
+<div class="callout"><b>Recognize DSU:</b> keywords like "connected components" + <i>incremental</i> additions; "redundant edge"; grouping items by shared attribute (merge on any common email/row/column); "number of groups after merges". Also a clean way to detect cycles in undirected graphs incrementally: an edge whose endpoints already share a root closes a cycle.</div>
+<div class="callout warn"><b>When NOT DSU:</b> edge <i>deletions</i> (DSU can't un-merge — process queries offline in reverse, or use a different structure); when you need distances or paths, not just connectivity (→ BFS); when the graph is static and you just need components once (plain DFS is simpler).</div>`,
+guided:{title:"Union-Find with both optimizations — guided walkthrough",
+intuition:`find loops until self-parent, compressing with <code>parent[x] = parent[parent[x]]</code> (path halving — one line, same amortized effect). union links roots by rank, breaking ties by incrementing rank. Track component count as you union for free.`,
+code:`class DSU:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+        self.components = n
+
+    def find(self, x):
+        while self.parent[x] != x:
+            self.parent[x] = self.parent[self.parent[x]]  # halve path
+            x = self.parent[x]
+        return x
+
+    def union(self, a, b):
+        ra, rb = self.find(a), self.find(b)
+        if ra == rb:
+            return False            # already same set (cycle edge)
+        if self.rank[ra] < self.rank[rb]:
+            ra, rb = rb, ra
+        self.parent[rb] = ra        # smaller under larger
+        if self.rank[ra] == self.rank[rb]:
+            self.rank[ra] += 1
+        self.components -= 1
+        return True`,
+complexity:"O(α(n)) amortized per op, O(n) space. The boolean return of union doubles as cycle detection and 'did a merge happen' — used by Redundant Connection and MST algorithms (Kruskal)."},
+practice:[
+{t:"Number of Provinces",s:"number-of-provinces",d:M},
+{t:"Redundant Connection",s:"redundant-connection",d:M},
+{t:"Accounts Merge",s:"accounts-merge",d:M},
+{t:"Most Stones Removed with Same Row or Column",s:"most-stones-removed-with-same-row-or-column",d:M}],
+checks:["Why can't a DSU handle edge deletions, and what is the standard workaround when a problem has both insertions and deletions of connectivity?","In Most Stones Removed with Same Row or Column, you can union stones that share a row OR a column. Why is it enough to union each stone with just one representative per row and per column (e.g., first stone seen in that row/column) instead of all pairs?"]},
+
+{ id:18, week:3, title:"Topological Sort & Cycle Detection", topics:"Kahn's algorithm · DFS coloring · Safe states",
+lesson:`
+<h3>The underlying problem</h3>
+<p>Tasks with prerequisites (a DAG: directed edges pre → course). You need a valid linear order where every prerequisite precedes its dependents. No such order exists iff the graph has a <b>directed cycle</b> — so ordering and cycle detection are the same problem.</p>
+<h3>Two algorithms</h3>
+<ul>
+<li><b>Kahn's (BFS, indegrees):</b> compute each node's indegree. Repeatedly take a node with indegree 0 (nothing blocks it), append to order, and decrement its neighbors' indegrees. If the final order covers all nodes → valid; if not → a cycle swallowed the remainder. Natural queue-based implementation; also gives a "layered" order (earliest-possible semester semantics).</li>
+<li><b>DFS with 3 colors:</b> WHITE (unvisited) / GRAY (on the current recursion stack) / BLACK (done). Encounter an edge to a GRAY node ⇒ back edge ⇒ cycle. Appending nodes on finish (postorder), then reversing, yields a topological order.</li>
+</ul>
+<div class="callout"><b>Recognize:</b> prerequisites, build dependencies, task scheduling, "order of courses", "alien dictionary" (derive edges from consecutive word pairs). Constraints like "if impossible return []" are explicitly inviting cycle detection.</div>
+<div class="callout warn"><b>Subtlety — Find Eventual Safe States:</b> a node is safe iff it can't reach a cycle. The clean way: DFS with colors; a node is safe iff ALL its children are safe (terminal nodes trivially safe). This "reverse thinking on cycle reachability" is a favorite follow-up.</div>`,
+guided:{title:"Course Schedule II — guided walkthrough",
+intuition:`Kahn's algorithm. indegree = number of unresolved prerequisites. A course with indegree 0 can be taken now. Taking it decrements its dependents. The queue always holds every currently-takeable course. If we eventually schedule all n courses, no cycle existed.`,
+code:`from collections import deque, defaultdict
+
+def findOrder(numCourses, prerequisites):
+    adj = defaultdict(list)
+    indeg = [0] * numCourses
+    for course, pre in prerequisites:
+        adj[pre].append(course)          # edge pre -> course
+        indeg[course] += 1
+
+    q = deque(i for i in range(numCourses) if indeg[i] == 0)
+    order = []
+    while q:
+        c = q.popleft()
+        order.append(c)
+        for nxt in adj[c]:
+            indeg[nxt] -= 1
+            if indeg[nxt] == 0:
+                q.append(nxt)
+
+    return order if len(order) == numCourses else []`,
+complexity:"O(V + E) time and space. Edge cases: no prerequisites (any order — this returns 0..n-1), self-loop (course requires itself → cycle → []), duplicate edges (indegree double-counts; harmless if input has no dupes — mention it)."},
+practice:[
+{t:"Course Schedule",s:"course-schedule",d:M},
+{t:"Course Schedule II",s:"course-schedule-ii",d:M},
+{t:"Find Eventual Safe States",s:"find-eventual-safe-states",d:M}],
+checks:["In Kahn's algorithm, prove: the output order misses some nodes IF AND ONLY IF the graph contains a directed cycle.","In the DFS 3-color method, why does encountering a GRAY node (rather than just any visited node) indicate a cycle, while a BLACK node is fine? What exactly do the colors mean about the recursion stack?"]},
+
+{ id:19, week:3, title:"Shortest Paths & MST", topics:"Dijkstra · Bellman-Ford · Prim's",
+lesson:`
+<h3>Weighted shortest paths — why BFS dies</h3>
+<p>BFS finds shortest paths only because every edge costs 1 (all frontier rings are equal). With weights, "fewer edges" ≠ "shorter path". You need to always <b>settle the closest unsettled node</b> — that's Dijkstra's greedy core.</p>
+<h3>Dijkstra — non-negative weights</h3>
+<p>Priority queue of (distance, node). Pop the closest unsettled node; its distance is now FINAL (proof relies on non-negative weights: any other route through unsettled nodes is already ≥ it). Relax its edges. Lazy-deletion variant: skip popped nodes already settled. Complexity O(E log V).</p>
+<h3>Bellman-Ford — negative edges, k-hop limits</h3>
+<p>Relax EVERY edge, V−1 times (or exactly k times if the path may use at most k edges — Cheapest Flights). After the i-th round, all shortest paths using ≤ i edges are correct. Detects negative cycles: a V-th round that still improves ⇒ negative cycle. O(V·E) — use when weights can be negative or hop-limited.</p>
+<h3>Minimum Spanning Tree — Prim's</h3>
+<p>Grow one tree from any start node; repeatedly add the cheapest edge crossing from tree to non-tree. Priority queue of crossing edges → O(E log V). Greedy is provably optimal (cut property: the minimum edge across any cut is in some MST). Kruskal's = sort all edges + DSU — also worth knowing.</p>
+<div class="callout warn"><b>When NOT Dijkstra:</b> negative weights (results silently wrong, not just slow — the finality proof breaks); when you need all-pairs (Floyd-Warshall O(V³) for small V); unweighted (BFS is strictly better).</div>`,
+guided:{title:"Network Delay Time (Dijkstra) — guided walkthrough",
+intuition:`Standard lazy Dijkstra from node k. Pop (d, node); if node already settled, the entry is stale (a shorter path was processed first) — skip. Otherwise settle it; for each neighbor, push (d + w, nb) if nb unsettled. Answer = max settled distance (time when the LAST node receives the signal); −1 if some node never settled.`,
+code:`import heapq
+from collections import defaultdict
+
+def networkDelayTime(times, n, k):
+    adj = defaultdict(list)
+    for u, v, w in times:
+        adj[u].append((v, w))
+
+    dist = {}
+    heap = [(0, k)]
+    while heap:
+        d, node = heapq.heappop(heap)
+        if node in dist:              # stale entry - skip
+            continue
+        dist[node] = d                # FINAL: nothing can beat it
+        for nb, w in adj[node]:
+            if nb not in dist:
+                heapq.heappush(heap, (d + w, nb))
+
+    return max(dist.values()) if len(dist) == n else -1`,
+complexity:"O(E log E) = O(E log V). Space O(V + E). Edge cases: unreachable node, k alone, parallel edges (heap handles naturally), the stale-entry skip is what keeps it correct despite duplicates in the heap."},
+practice:[
+{t:"Network Delay Time",s:"network-delay-time",d:M},
+{t:"Cheapest Flights Within K Stops",s:"cheapest-flights-within-k-stops",d:M},
+{t:"Min Cost to Connect All Points",s:"min-cost-to-connect-all-points",d:M}],
+checks:["Give the one-sentence proof that when Dijkstra pops a node, its distance is final — and identify exactly where negative weights break that sentence.","Cheapest Flights requires at most k stops. Explain why plain Dijkstra fails, and why running Bellman-Ford exactly k+1 relaxation rounds respects the stop limit."]},
+
+{ id:20, week:3, title:"DP I — Recursion → Memoization → Tabulation", topics:"State design · Overlapping subproblems · Space optimization",
+lesson:`
+<h3>The underlying problem</h3>
+<p>Climbing stairs: ways(n) = ways(n−1) + ways(n−2). Naive recursion recomputes ways(3) millions of times — the recursion tree explodes exponentially. <b>Overlapping subproblems + optimal substructure = DP.</b> Compute each subproblem once, reuse forever.</p>
+<h3>The three-step derivation (always present it this way in interviews)</h3>
+<ol>
+<li><b>Recursion:</b> define the function precisely on paper. "f(i) = the answer for the subproblem consisting of suffix/elements from i onward." The <i>definition</i> is the hard part — the code is a transcription.</li>
+<li><b>Memoize:</b> cache results keyed by parameters. O(states × transition cost). Top-down; only computes reachable states.</li>
+<li><b>Tabulate:</b> order the table so dependencies are computed first; iterate bottom-up. Removes recursion overhead, enables space optimization to O(1) when the recurrence only looks back a fixed number of rows (Fibonacci-style → two variables).</li>
+</ol>
+<div class="callout"><b>State definition is 80% of DP.</b> Vague states ("dp[i] is something about i") fail. Precise states: "dp[i] = max money robbable from the first i houses"; "dp[i][j] = LCS of the first i chars of text1 and first j of text2". If you can't write the sentence, you don't have the state yet.</div>
+<div class="callout warn"><b>DP vs greedy vs backtracking — the decision:</b> does the current optimal choice depend only on local info (greedy, needs proof)? Do subproblems overlap (DP)? Must you enumerate exponentially many complete answers (backtracking)? House Robber is the perfect DP-vs-greedy demo: greedy "rob the richest available house" fails on [2,7,9,3,1]-style inputs because skipping now enables two robberies later.</div>`,
+guided:{title:"House Robber — full derivation — guided walkthrough",
+intuition:`State: dp(i) = max loot from houses 0..i. Choice at house i: rob it (then house i−1 is forbidden → dp(i−2) + v[i]) or skip it (dp(i−1)). dp(i) = max of the two. Overlap is massive — dp(i−2) is needed by both branches. Only two previous values are used → two rolling variables replace the array.`,
+code:`def rob(nums):
+    take, skip = 0, 0
+    # take = best if we rob current house; skip = best if we don't
+    for x in nums:
+        take, skip = skip + x, max(take, skip)
+        # rob x: previous house must have been skipped
+        # skip x: carry forward best of both prior options
+    return max(take, skip)`,
+complexity:"O(n) time, O(1) space. Edge cases: empty (0), single house, two houses. The simultaneous tuple assignment is critical — compute both from OLD values; sequential assignment would corrupt skip."},
+practice:[
+{t:"Climbing Stairs",s:"climbing-stairs",d:E},
+{t:"Min Cost Climbing Stairs",s:"min-cost-climbing-stairs",d:E},
+{t:"House Robber",s:"house-robber",d:M},
+{t:"House Robber II",s:"house-robber-ii",d:M},
+{t:"Decode Ways",s:"decode-ways",d:M}],
+checks:["For House Robber II (circular street), explain the reduction: why does running the linear solver twice on subranges cover all cases, and why do you NOT need a third case?","For Decode Ways, what are the two transition branches, and what exact conditions make each branch invalid (leading zeros, values > 26)? Where do most submissions fail?"]},
+
+{ id:21, week:3, title:"DP II — Knapsack, LCS, LIS", topics:"0/1 knapsack · Subset sum · 2D DP · n log n LIS",
+lesson:`
+<h3>0/1 Knapsack — the master template</h3>
+<p>State: dp(i, remaining_capacity) = best using items from i onward. Choice: skip item i, or take it (if it fits). One catch defines the family: can you reuse an item? 0/1 knapsack (no reuse) loops capacity <b>downward</b> in the 1D compression; unbounded (Coin Change) loops <b>upward</b>. Getting this direction backwards is the most common DP bug in interviews.</p>
+<p><b>Subset-sum / partition-equal-subset:</b> knapsack where value = weight and you ask "does capacity sum/2 become reachable?" — dp over booleans: reachable[c] after considering item i.</p>
+<h3>Longest Common Subsequence — 2D DP prototype</h3>
+<p>dp[i][j] = LCS of first i chars of A and first j of B. If A[i−1] == B[j−1]: dp[i−1][j−1] + 1 (that char ends the LCS). Else: max(dp[i−1][j], dp[i][j−1]) — one of the two last chars is not at the end of the LCS. O(mn) time/space. This skeleton powers edit distance, distinct subsequences, and more.</p>
+<h3>Longest Increasing Subsequence</h3>
+<p>dp[i] = LIS ending at i: max over j &lt; i with nums[j] &lt; nums[i], plus 1 → O(n²). The O(n log n) version: maintain <code>tails</code>, where tails[k] = the smallest possible tail of any increasing subsequence of length k+1. For each x, binary-search the first tail ≥ x and replace it (or append). Intuition: keeping tails minimal maximizes future extension room.</p>
+<div class="callout warn"><b>Recognize DP by constraints:</b> n ≤ ~2500 with "longest/maximum count of a subsequence-like structure" → O(n²) DP or O(n log n) LIS; two strings with edit/match/count operations → LCS-family 2D DP; "can we partition/reach exactly sum S" → subset-sum.</div>`,
+guided:{title:"Coin Change (unbounded knapsack, min items) — guided walkthrough",
+intuition:`dp[a] = fewest coins making amount a. Try every coin c as the LAST coin used: dp[a] = 1 + min(dp[a − c]). Order of coins doesn't matter — every "last coin" branch is covered. Initialize dp[0] = 0 and infinity elsewhere; unreachable amounts stay infinite. Iterating amounts upward allows coin reuse (unbounded).`,
+code:`def coinChange(coins, amount):
+    INF = float('inf')
+    dp = [0] + [INF] * amount
+    for a in range(1, amount + 1):
+        for c in coins:
+            if c <= a and dp[a - c] + 1 < dp[a]:
+                dp[a] = dp[a - c] + 1
+    return dp[amount] if dp[amount] != INF else -1`,
+complexity:"O(amount × coins) time, O(amount) space. Edge cases: amount 0 (0 coins), coin larger than amount (skipped by guard), no solution (INF → −1), coins containing amount itself. This is the DP counter-example to greedy coin change (Day 15)."},
+practice:[
+{t:"Coin Change",s:"coin-change",d:M},
+{t:"Partition Equal Subset Sum",s:"partition-equal-subset-sum",d:M},
+{t:"Longest Common Subsequence",s:"longest-common-subsequence",d:M},
+{t:"Longest Increasing Subsequence",s:"longest-increasing-subsequence",d:M},
+{t:"Unique Paths",s:"unique-paths",d:M}],
+checks:["In the 1D compression of 0/1 knapsack, why does iterating capacity downward prevent item reuse, and upward cause it? Trace one item through both directions to show it.","In the O(n log n) LIS, why is 'replace the first tail ≥ x with x' correct — why does replacing not break tails' meaning, and why isn't tails itself always an increasing subsequence of nums?"]},
+
+{ id:22, week:3, title:"DP III — Grid, Interval, Tree DP, Bitmask", topics:"Grid DP · Split-by-last · Tree DP · Small-set states",
+lesson:`
+<h3>Grid DP</h3>
+<p>Movement constrained to right/down ⇒ acyclic ⇒ natural DP order. dp[r][c] = f(dp[r−1][c], dp[r][c−1]). Min Path Sum: dp = grid value + min of two predecessors. Maximal Square: dp[r][c] = 1 + min(up, left, up-left) — the size of the largest square whose bottom-right corner is (r,c); the min of three neighbors is the binding constraint. Watch first row/column initialization and in-place O(1)-extra-space variants.</p>
+<h3>Interval DP — split by the LAST operation</h3>
+<p>For problems on ranges ("burst these balloons, merge these stones, is this palindrome"), define dp[l][r] over subranges. The transition splits the range — <b>crucially, often by choosing the LAST element to process</b> (Burst Balloons: last balloon to burst in [l,r] — because 'last' is the one whose neighbors are known: the fixed boundaries l−1 and r+1). Iterate by range LENGTH so smaller ranges are ready. O(n²) states, O(n) splits → O(n³).</p>
+<h3>Tree DP</h3>
+<p>Each node returns one value per "state of choice at this node". House Robber III: each dfs returns (rob_this_node_best, skip_this_node_best). Parent picks from children's pairs — same recurrence as linear House Robber, but branching. General rule: if a tree problem's choice at a node constrains children, return a tuple of per-choice optima.</p>
+<h3>Bitmask DP</h3>
+<p>When state includes "which of ≤ ~20 items are used", represent the set as an integer bitmask. dp[mask] = best over the subproblem defined by mask. Bit ops: check bit i: <code>mask &amp; (1&lt;&lt;i)</code>; set: <code>mask | (1&lt;&lt;i)</code>. Partition to K Equal Sum Subsets: dp over (mask → can fill / how filled). Constraint n ≤ 16–20 in the problem statement is the tell.</p>
+<div class="callout warn"><b>Order of computation is a correctness issue, not an optimization:</b> interval DP MUST go by increasing length; grid DP row-major works only for acyclic movement; tree DP is free (recursion handles order). Cyclic dependencies (grid with 4-direction movement) are not DP — that's graph shortest path.</div>`,
+guided:{title:"Maximal Square — guided walkthrough",
+intuition:`dp[r+1][c+1] (1-indexed with a zero border — kills edge-case code) = side of the largest all-1 square whose BOTTOM-RIGHT corner is (r, c). A square of side s here requires squares of side ≥ s−1 ending above, to the left, and diagonally up-left. The minimum of the three caps us; +1 extends all of them simultaneously.`,
+code:`def maximalSquare(matrix):
+    rows, cols = len(matrix), len(matrix[0])
+    dp = [[0] * (cols + 1) for _ in range(rows + 1)]  # zero border
+    best = 0
+    for r in range(rows):
+        for c in range(cols):
+            if matrix[r][c] == '1':
+                dp[r+1][c+1] = 1 + min(dp[r][c],      # up-left
+                                        dp[r+1][c],    # left
+                                        dp[r][c+1])    # up
+                best = max(best, dp[r+1][c+1])
+    return best * best`,
+complexity:"O(R·C) time, O(C) space possible with a rolling row (keep previous row + up-left corner in a variable — mention it). Edge cases: all zeros, single row/column (answer ≤ 1), matrix values are STRINGS '1'/'0' on LeetCode."},
+practice:[
+{t:"Minimum Path Sum",s:"minimum-path-sum",d:M},
+{t:"Maximal Square",s:"maximal-square",d:M},
+{t:"Partition to K Equal Sum Subsets",s:"partition-to-k-equal-sum-subsets",d:M},
+{t:"House Robber III",s:"house-robber-iii",d:M},
+{t:"Burst Balloons",s:"burst-balloons",d:H}],
+checks:["For Burst Balloons, why is 'choose the LAST balloon to burst in [l, r]' the workable split, while 'choose the FIRST' leads to unknown neighbor values? What neighbors does the last balloon see at burst time?","For House Robber III, write the two return values of dfs(node) precisely and the exact formula the parent applies for each of its own two states. Why can't the parent just use max(child_return)?"]},
+
+{ id:23, week:4, title:"Binary Search on Answer + Bit Manipulation", topics:"Monotone predicates · XOR tricks · Two's complement",
+lesson:`
+<h3>Binary search on answer — the full treatment</h3>
+<p>Previewed on Day 5, now mastered. The pattern: the question "minimize the maximum X" or "smallest capacity/speed/size such that everything fits" defines a hidden <b>monotone predicate</b> over the answer space: feasible(x) is false … false, true … true. Binary-search the boundary. The array being searched is not the input — it's the range of possible answers [min possible, max possible].</p>
+<p><b>The two-part discipline:</b> (1) write feasible(x) as a clean O(n) greedy check (usually a single pass counting parts/greedy allocation); (2) binary search the smallest feasible x. Interviewers grade BOTH halves. If feasible isn't monotone, the whole approach is invalid — always sanity-check monotonicity explicitly.</p>
+<p>Recognize: "minimize the maximum", "maximize the minimum", "at most k operations", "smallest divisor/speed/capacity such that…".</p>
+<h3>Bit manipulation essentials</h3>
+<ul>
+<li><b>XOR:</b> a⊕a = 0, a⊕0 = a → cancels pairs: Single Number in O(n)/O(1).</li>
+<li><b>n &amp; (n−1)</b> clears the lowest set bit → count bits by iterating this; also tests power of two (n &gt; 0 and n &amp; (n−1) == 0).</li>
+<li><b>n &amp; (−n)</b> isolates the lowest set bit (two's complement: −n = ~n + 1 flips everything above the lowest set bit).</li>
+<li><b>Counting bits for all 0..n (DP!):</b> countBits(n) = countBits(n &gt;&gt; 1) + (n &amp; 1) — each number is its half plus its last bit.</li>
+<li>Sum without + : XOR gives sum-without-carry; AND &lt;&lt; 1 gives the carry; loop until carry is 0.</li>
+</ul>
+<div class="callout warn"><b>Python-specific traps:</b> Python ints are arbitrary-precision — no 32-bit overflow by default (mask with 0xFFFFFFFF when the problem demands 32-bit semantics, e.g. Sum of Two Integers with negative loops). Right shift of negatives floors toward −∞, unlike Java/C. In C++/Java watch sign-bit overflow in mid = (lo + hi) / 2 → use lo + (hi − lo) / 2.</div>`,
+guided:{title:"Split Array Largest Sum — guided walkthrough",
+intuition:`Minimize the maximum subarray sum over k splits. Predicate feasible(limit) = "can we split into ≤ k parts with each part's sum ≤ limit" — greedy check: greedily pack elements left to right, start a new part when adding x would exceed limit. feasible is monotone: larger limits only make packing easier. Search the smallest feasible limit in [max(nums), sum(nums)] — no valid split has max part below max(nums) or above sum(nums).`,
+code:`def splitArray(nums, k):
+    def feasible(limit):
+        parts, cur = 1, 0
+        for x in nums:
+            if cur + x > limit:
+                parts += 1
+                cur = x            # x alone starts the new part
+                if parts > k:
+                    return False
+            else:
+                cur += x
+        return True
+
+    lo, hi = max(nums), sum(nums)
+    while lo < hi:
+        mid = (lo + hi) // 2
+        if feasible(mid):
+            hi = mid
+        else:
+            lo = mid + 1
+    return lo`,
+complexity:"O(n log(sum)) time, O(1) space. Edge cases: k == n (answer = max), k == 1 (answer = sum), single element. Note: the greedy check is provably optimal for feasibility — packing more never hurts (exchange argument)."},
+practice:[
+{t:"Capacity to Ship Packages Within D Days",s:"capacity-to-ship-packages-within-d-days",d:M},
+{t:"Split Array Largest Sum",s:"split-array-largest-sum",d:H},
+{t:"Single Number",s:"single-number",d:E},
+{t:"Counting Bits",s:"counting-bits",d:E},
+{t:"Sum of Two Integers",s:"sum-of-two-integers",d:M}],
+checks:["For Split Array Largest Sum, why are max(nums) and sum(nums) the correct search bounds — argue why no answer can lie outside them.","Explain Sum of Two Integers: what does XOR compute, what does (a AND b) << 1 compute, and why must you mask with 0xFFFFFFFF in Python to handle negative numbers correctly?"]},
+
+{ id:24, week:4, title:"K-way Merge, Sweep Line, Fenwick/Segment Trees", topics:"Heap-of-heads · Events · Prefix sums with updates",
+lesson:`
+<h3>K-way merge</h3>
+<p>Merge k sorted lists. Concatenate + sort: O(N log N). Merge pairwise: O(N log k) but clunky. The elegant way: a <b>min-heap of the current heads</b> (smallest un-consumed element of each list). Pop the global min, push its successor. Each element enters/leaves the heap once: O(N log k) time, O(k) space. Same skeleton: K Pairs with Smallest Sums, Smallest Range from K Lists, k-way merge of sorted streams (external merge sort). Recognize: "k sorted …" + "merge / smallest / k-th".</p>
+<h3>Sweep line (recap + level up)</h3>
+<p>From Day 16: convert geometry/intervals into events, sort, maintain running state. My Calendar I: booking conflicts = intervals; a sorted list of (start, end) with binary search on start checks the two neighboring intervals for overlap in O(log n) per booking. The insight: a new interval can only conflict with its immediate neighbors <i>in sorted order</i> — sorting collapses O(n) checking to O(1) neighbors.</p>
+<h3>Prefix sums that survive updates — Fenwick (BIT) and Segment Trees</h3>
+<p>Day 2's weakness, resolved. A <b>Fenwick tree</b> supports both point-update and prefix-sum-query in O(log n) using a clever index trick: node i covers a range of length i &amp; (−i) (the lowest set bit). update: add at i, then i += i &amp; (−i) up the chain. query: sum from i down: i −= i &amp; (−i). ~10 lines of code — a big interview differentiator. <b>Segment tree:</b> heavier (recursive or iterative, 2n array), but supports arbitrary range queries (min, max, sum) and lazy propagation for range updates. Rule: Fenwick for prefix sums/point updates; segment tree when you need range-min/max or range updates.</p>
+<div class="callout warn"><b>When NOT to reach for these:</b> static array → prefix sums (Day 2); few queries → recompute; LeetCode constraints with n ≤ 10⁴ and no updates → plain O(n) scan per query usually passes. These structures earn their keep only with interleaved updates + range queries. Saying "I'd consider a Fenwick tree, but given the constraints an O(n) scan suffices" is a STRONGER answer than blindly deploying one.</div>`,
+guided:{title:"Merge k Sorted Lists — guided walkthrough",
+intuition:`Heap holds one candidate per list — the head of its unconsumed portion. The global minimum across lists must be one of these heads. Pop it onto the output; its list's next element becomes that list's new candidate. Tuple includes the list index so heapq never compares nodes (and ties break deterministically).`,
+code:`import heapq
+
+def mergeKLists(lists):
+    heap = [(node.val, i, node) for i, node in enumerate(lists) if node]
+    heapq.heapify(heap)
+    dummy = tail = ListNode()          # sentinel - Day 6 tool
+    while heap:
+        _, i, node = heapq.heappop(heap)
+        tail.next = node
+        tail = node
+        if node.next:
+            heapq.heappush(heap, (node.next.val, i, node.next))
+    return dummy.next`,
+complexity:"O(N log k) time where N = total nodes, k = list count; O(k) heap space. Edge cases: empty lists array, some lists empty, single list, all lists empty. Compare complexity out loud: naive repeated pairwise merging bottom-up is also O(N log k) — the heap version handles streaming sources."},
+practice:[
+{t:"Merge k Sorted Lists",s:"merge-k-sorted-lists",d:H},
+{t:"Find K Pairs with Smallest Sums",s:"find-k-pairs-with-smallest-sums",d:M},
+{t:"My Calendar I",s:"my-calendar-i",d:M},
+{t:"Range Sum Query – Mutable",s:"range-sum-query-mutable",d:M},
+{t:"Reverse Pairs",s:"reverse-pairs",d:H}],
+checks:["In Merge k Sorted Lists, why is the heap initialized with only k elements rather than all N? What property guarantees the next output element is always currently in the heap?","Describe the Fenwick tree query/update index walks (i −= i & (−i) and i += i & (−i)) and explain what range of indices each node i is responsible for covering."]},
+
+{ id:25, week:4, title:"Pattern Recognition — Mixed Practice", topics:"Constraint-driven identification · No labels",
+lesson:`
+<h3>Today there are no labels — like a real interview</h3>
+<p>Use the Practice tab below. Every problem is drawn from patterns you've studied (Days 1–24), but the pattern is hidden. Before solving, commit to a written answer for these four questions — then reveal:</p>
+<ol>
+<li>What does the brute force look like, and what's its complexity?</li>
+<li>What property of the input/answer can I exploit?</li>
+<li>Which technique does that property suggest, and why?</li>
+<li>What is the target complexity given the constraints?</li>
+</ol>
+<h3>Constraint → technique cheat sheet (derive, don't memorize)</h3>
+<table style="width:100%;border-collapse:collapse;font-size:13px">
+<tr style="color:var(--accent2)"><td style="padding:6px;border:1px solid var(--border)"><b>Signal</b></td><td style="padding:6px;border:1px solid var(--border)"><b>Likely technique</b></td></tr>
+<tr><td style="padding:6px;border:1px solid var(--border)">n ≤ 20–25</td><td style="padding:6px;border:1px solid var(--border)">Backtracking / bitmask DP (2ⁿ or n!)</td></tr>
+<tr><td style="padding:6px;border:1px solid var(--border)">n ≤ 500, "pairs / count"</td><td style="padding:6px;border:1px solid var(--border)">O(n²) DP or brute pairs</td></tr>
+<tr><td style="padding:6px;border:1px solid var(--border)">n ≤ 10⁵–10⁶</td><td style="padding:6px;border:1px solid var(--border)">O(n) or O(n log n) — hash, two pointers, window, sort, heap</td></tr>
+<tr><td style="padding:6px;border:1px solid var(--border)">"subarray / substring" + sums/counts</td><td style="padding:6px;border:1px solid var(--border)">Prefix sums (+hash) or sliding window</td></tr>
+<tr><td style="padding:6px;border:1px solid var(--border)">sorted or "sorted-ish" input</td><td style="padding:6px;border:1px solid var(--border)">Binary search / two pointers</td></tr>
+<tr><td style="padding:6px;border:1px solid var(--border)">"top k / k-th / k closest"</td><td style="padding:6px;border:1px solid var(--border)">Heap of size k (or quickselect)</td></tr>
+<tr><td style="padding:6px;border:1px solid var(--border)">"next greater/smaller"</td><td style="padding:6px;border:1px solid var(--border)">Monotonic stack</td></tr>
+<tr><td style="padding:6px;border:1px solid var(--border)">"fewest steps / minimum moves", unweighted</td><td style="padding:6px;border:1px solid var(--border)">BFS</td></tr>
+<tr><td style="padding:6px;border:1px solid var(--border)">"can we achieve X with limit L"</td><td style="padding:6px;border:1px solid var(--border)">Binary search on answer</td></tr>
+<tr><td style="padding:6px;border:1px solid var(--border)">overlapping subproblems, optimal structure</td><td style="padding:6px;border:1px solid var(--border)">DP — define the state precisely first</td></tr>
+</table>
+<div class="callout">Solve at least 5 mixed problems today. Score yourself honestly with the status buttons — anything not marked "Solved independently" enters your spaced-repetition review queue.</div>`,
+guided:{title:"How to run today's session",
+intuition:`Pick a problem. Spend up to 10 minutes on the four identification questions BEFORE opening the editor. Write your pattern guess and its justification down. Then solve it. Then reveal the pattern label and compare — if you misidentified, note WHY (which signal did you miss?) in your review notes.`,
+code:`// No code today. The deliverable is the identification log:
+//
+// Problem:        ____________
+// Brute force:    ____________ (complexity)
+// Exploitable:    ____________
+// Guessed pattern: ____________
+// Actual pattern:  ____________
+// Missed signal:   ____________`,
+complexity:"Time-box: ~25 minutes per problem for identification + solving. If stuck 25+ min, mark it, reveal the pattern, and add it to the review queue — that is a successful learning event, not a failure."},
+practice:[
+{t:"Longest Repeating Character Replacement",s:"longest-repeating-character-replacement",d:M,pat:"Sliding Window (variable)"},
+{t:"3Sum",s:"3sum",d:M,pat:"Sort + Two Pointers (converging)"},
+{t:"Course Schedule",s:"course-schedule",d:M,pat:"Topological Sort / Cycle Detection"},
+{t:"Daily Temperatures",s:"daily-temperatures",d:M,pat:"Monotonic Stack"},
+{t:"Subarray Sum Equals K",s:"subarray-sum-equals-k",d:M,pat:"Prefix Sums + Hash Map"},
+{t:"Kth Largest Element in an Array",s:"kth-largest-element-in-an-array",d:M,pat:"Heap of size k / Quickselect"},
+{t:"Number of Islands",s:"number-of-islands",d:M,pat:"Grid Graph — DFS/BFS Components"},
+{t:"Jump Game II",s:"jump-game-ii",d:M,pat:"Greedy (BFS-like level expansion)"},
+{t:"Coin Change",s:"coin-change",d:M,pat:"Unbounded Knapsack DP"},
+{t:"Merge Intervals",s:"merge-intervals",d:M,pat:"Sort Intervals + Linear Merge"},
+{t:"Product of Array Except Self",s:"product-of-array-except-self",d:M,pat:"Prefix / Suffix Products"},
+{t:"Longest Increasing Subsequence",s:"longest-increasing-subsequence",d:M,pat:"DP (+ n log n binary search variant)"}],
+checks:["Pick the problem you misidentified most badly today: what signal in the problem statement SHOULD have pointed you to the right pattern, and what distracted you?","For two of today's problems, state the one-line invariant that makes the correct solution work."]},
+
+{ id:26, week:4, title:"Weak-Topic Revision", topics:"Review queue · Concept re-derivation",
+lesson:`
+<h3>Today is driven by YOUR data</h3>
+<p>Open the <b>Review</b> view in the top navigation. It contains every problem you marked as anything other than "Solved independently", scheduled by spaced repetition (1 / 3 / 7 days). Today's session:</p>
+<ol>
+<li><b>Clear all due reviews.</b> For each, re-solve from scratch on paper or LeetCode — no peeking at your old solution. The struggle IS the encoding mechanism; retrieval practice is what builds retention.</li>
+<li><b>Revisit the two topics with the most red/orange problems.</b> Don't just re-read — re-DERIVE. Close the app, take a blank page, and reconstruct the concept: the brute force, the wasted work, the invariant, the complexity. Compare with the lesson. Gaps you find are exactly what to fix.</li>
+<li><b>Re-derive three algorithms from memory:</b> pick three you marked as "needed solution" and rewrite them cold, then verify against the Guided Example code.</li>
+</ol>
+<div class="callout"><b>The 1–3–7 rule:</b> reviewing at expanding intervals (1 day, 3 days, 7 days after first solving) exploits the forgetting curve — each successful retrieval flattens the decay. A problem you re-solve cold after 7 days is roughly permanent. This is why the app schedules reviews rather than just listing problems.</div>
+<p>Then continue mixed practice with any remaining time — Day 25's pool is still available and unlabeled.</p>`,
+guided:{title:"Revision protocol per problem",
+intuition:`For each due review problem: (1) recall the approach OUT LOUD as if to an interviewer — 2 minutes max; (2) implement cold; (3) only then compare with your previous attempt; (4) mark Done or Still hard (which reschedules it +1/+3/+7 from today).`,
+code:`// Revision checklist per problem (say each out loud):
+// 1. What is the brute force and why is it slow?
+// 2. What property does the optimal solution exploit?
+// 3. What is the invariant?
+// 4. Time and space complexity?
+// 5. One edge case that commonly breaks solutions?
+// Then: implement cold, compare, mark Done / Still hard.`,
+complexity:"Target: 60–90 minutes of reviews, 30–60 minutes of re-derivation, rest for mixed practice."},
+practice:[
+{t:"Longest Substring Without Repeating Characters",s:"longest-substring-without-repeating-characters",d:M},
+{t:"Validate Binary Search Tree",s:"validate-binary-search-tree",d:M},
+{t:"Combination Sum",s:"combination-sum",d:M},
+{t:"Cheapest Flights Within K Stops",s:"cheapest-flights-within-k-stops",d:M},
+{t:"Partition Equal Subset Sum",s:"partition-equal-subset-sum",d:M}],
+checks:["Which single technique has the most problems in your review queue, and what does that tell you about where your intuition is weakest?","Take one concept you re-derived today: could you teach it to a colleague in 5 minutes without notes? If not, what specific part breaks down?"]},
+
+{ id:27, week:4, title:"Timed Mock Interviews", topics:"Interview simulation · Communication protocol",
+lesson:`
+<h3>Today you rehearse the performance, not just the algorithm</h3>
+<p>SDE-2 interviews grade problem-solving AND communication. Today: 3 mock sets, 2 problems each, <b>35 minutes per problem, strict timer</b> (use the timer in the top bar). Follow this protocol exactly:</p>
+<ol>
+<li><b>Minutes 0–5 — Clarify.</b> Restate the problem. Ask about edge cases, input ranges, duplicates, empty inputs. State the constraint-driven target complexity ("n up to 10⁵, so I need O(n log n) or better").</li>
+<li><b>Minutes 5–10 — Approach.</b> Present brute force FIRST, then the optimization path: "brute force is O(n²) because…; the wasted work is…; if we exploit X we get…". Get explicit buy-in before coding — real interviewers expect this.</li>
+<li><b>Minutes 10–25 — Code.</b> Narrate as you write. Clean names. State the invariant as a comment where relevant.</li>
+<li><b>Minutes 25–35 — Test &amp; analyze.</b> Dry-run on an example OUT LOUD, including an edge case. State final time/space complexity. Mention what you'd do with more time (follow-up variants).</li>
+</ol>
+<div class="callout warn"><b>Grade yourself harshly:</b> did you clarify before coding? Did you state brute force first? Did you go silent for 5+ minutes? Would an interviewer at a top company pass you? Record problems in the Practice tab below with honest status — anything not "independent" goes to the review queue.</div>`,
+guided:{title:"The STAR-style post-mortem (do this after every mock)",
+intuition:`After each problem, write three lines: what went well, where you lost time, and the ONE process change for the next problem. Patterns in post-mortems are more valuable than patterns in algorithms at this stage.`,
+code:`// Post-mortem template:
+// Went well:      ______________________
+// Lost time on:   ______________________
+// Process change: ______________________
+// Verdict: PASS / BORDERLINE / FAIL (be honest)`,
+complexity:"3 mocks × ~75 min ≈ 4 hours. If that exceeds your daily budget, do 2 mocks and carry the third to Day 28 morning."},
+practice:[
+{t:"Mock A-1: Longest Substring Without Repeating Characters",s:"longest-substring-without-repeating-characters",d:M},
+{t:"Mock A-2: Number of Islands",s:"number-of-islands",d:M},
+{t:"Mock B-1: Course Schedule II",s:"course-schedule-ii",d:M},
+{t:"Mock B-2: K Closest Points to Origin",s:"k-closest-points-to-origin",d:M},
+{t:"Mock C-1: Coin Change",s:"coin-change",d:M},
+{t:"Mock C-2: Daily Temperatures",s:"daily-temperatures",d:M}],
+checks:["In which mock segment (clarify / approach / code / test) do you consistently lose the most time, and what is your specific fix for tomorrow?","Which problem took you past 35 minutes — was the time lost in identification or implementation, and what does that diagnose?"]},
+
+{ id:28, week:4, title:"Final Review & Selected Hard Problems", topics:"Consolidation · Capstone hard problems",
+lesson:`
+<h3>Congratulations — Day 28</h3>
+<p>Final day structure:</p>
+<ol>
+<li><b>45 min — Concept sweep.</b> For each of the 24 techniques from Days 1–24, say out loud in one sentence: the underlying problem it solves, its invariant, and its complexity. Anything you can't produce fluently goes on a final flashcard list.</li>
+<li><b>90 min — Capstone hard problems</b> (Practice tab). These combine multiple techniques each — exactly what hard interviews do.</li>
+<li><b>30 min — Review queue cleanup.</b> Clear every due review. Anything still marked "still hard" — schedule it consciously into your ongoing routine; don't let it silently die.</li>
+</ol>
+<div class="callout"><b>Beyond Day 28:</b> your roadmap targets interview-readiness with advanced practice and mocks continuing to Dec 14. Maintain the rhythm: 2–3 due reviews daily, one timed mock every 2–3 days, and one NEW medium problem daily to keep pattern recognition sharp. The Review view keeps working for you — every problem you've marked flows through the 1/3/7-day cycle automatically.</div>
+<h3>How hard problems combine techniques</h3>
+<p>Median of Two Sorted Arrays: binary search on the partition, not on values. Word Search II: trie + grid DFS + backtracking + pruning. Burst Balloons: interval DP with the "last operation" insight. Largest Rectangle: monotonic stack + sentinel. Find Median from Data Stream: two heaps + rebalancing invariant. Notice: none of these require a NEW base technique — they require <b>composing two you already own</b>. That composition is what SDE-2 interviews actually test.</p>`,
+guided:{title:"Capstone strategy",
+intuition:`For each hard problem: spend up to 20 minutes on identification. Ask "which TWO techniques from my toolkit could compose here?" — hard problems are almost always a composition. If identification fails after 20 focused minutes, study the editorial actively: predict the next step before reading it, then re-implement from scratch tomorrow (it'll auto-enter your review queue).`,
+code:`// Capstone protocol:
+// 1. 20 min: identify composition of techniques
+// 2. Solve, or study editorial ACTIVELY (predict-then-verify)
+// 3. Re-implement from scratch within 24h
+// 4. Mark honestly - the review system does the rest`,
+complexity:"Time-box strictly: 90 minutes for capstones, hard 30-minute cap per problem for identification."},
+practice:[
+{t:"Median of Two Sorted Arrays",s:"median-of-two-sorted-arrays",d:H},
+{t:"Largest Rectangle in Histogram",s:"largest-rectangle-in-histogram",d:H},
+{t:"Word Search II",s:"word-search-ii",d:H},
+{t:"Burst Balloons",s:"burst-balloons",d:H},
+{t:"Find Median from Data Stream",s:"find-median-from-data-stream",d:H}],
+checks:["Final self-assessment: name your three strongest techniques and three weakest. What is your concrete maintenance plan for the weakest three over the next two weeks?","Explain to an imaginary interviewer why 'composition of two known techniques' is the correct mental model for hard problems, using one of today's capstones as the example."]}
+];
+
+/* ============================= STATE ============================= */
+const STORE_KEY = "dsa-sde2-progress-v1";
+let state = load();
+function load() {
+  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || fresh(); }
+  catch (e) { return fresh(); }
+  function fresh() { return { daysDone: {}, problems: {}, currentDay: 1 }; }
+}
+function save() { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+function todayStr() { // IST date
+  return new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Calcutta" });
+}
+function addDays(dateStr, n) {
+  const d = new Date(dateStr + "T12:00:00");
+  d.setDate(d.getDate() + n);
+  return d.toLocaleDateString("en-CA");
+}
+const STATUS_LABEL = { independent: "Solved independently", hints: "Solved with hints", solution: "Needed solution", revision: "Needs revision" };
+
+function setStatus(day, prob, status) {
+  const key = prob.s;
+  const prev = state.problems[key];
+  const t = todayStr();
+  if (!prev || prev.status !== status || status !== "independent") {
+    state.problems[key] = { status: status, day: day, date: t,
+      title: prob.t, url: LC(prob.s), diff: prob.d,
+      reviews: (status === "independent") ? [] : [1,3,7].map(n => ({ due: addDays(t, n), done: false })) };
+  } else {
+    state.problems[key].status = status;
+  }
+  save(); render();
+}
+function dueReviews() {
+  const t = todayStr(), out = [];
+  for (const key of Object.keys(state.problems)) {
+    const p = state.problems[key];
+    for (const r of (p.reviews || [])) {
+      if (!r.done && r.due <= t) { out.push({ key, p, r }); break; }
+    }
+  }
+  return out;
+}
+function pendingReviews() {
+  let n = 0;
+  for (const key of Object.keys(state.problems)) {
+    for (const r of (state.problems[key].reviews || [])) if (!r.done && r.due <= todayStr()) { n++; break; }
+  }
+  return n;
+}
+function reviewDone(key) {
+  const p = state.problems[key];
+  for (const r of p.reviews) if (!r.done && r.due <= todayStr()) { r.done = true; break; }
+  save(); render();
+}
+function reviewRevisit(key) {
+  const p = state.problems[key], t = todayStr();
+  p.reviews = [1,3,7].map(n => ({ due: addDays(t, n), done: false }));
+  save(); render();
+}
+
+/* ============================= TIMER ============================= */
+let timerSec = 45*60, timerRun = false, timerId = null;
+function fmt(s){ return String(Math.floor(s/60)).padStart(2,"0") + ":" + String(s%60).padStart(2,"0"); }
+function tick() {
+  if (timerSec > 0) timerSec--;
+  document.getElementById("timer-display").textContent = fmt(timerSec);
+  if (timerSec === 0) { stopTimer(); }
+}
+function stopTimer(){ timerRun=false; clearInterval(timerId); document.getElementById("timer-toggle").textContent="Start"; }
+document.getElementById("timer-toggle").onclick = () => {
+  if (timerRun) { stopTimer(); }
+  else { timerRun=true; timerId=setInterval(tick,1000); document.getElementById("timer-toggle").textContent="Pause"; }
+};
+document.getElementById("timer-reset").onclick = () => {
+  stopTimer();
+  const active = document.querySelector(".tpreset.active");
+  timerSec = parseInt(active.dataset.min)*60;
+  document.getElementById("timer-display").textContent = fmt(timerSec);
+};
+document.querySelectorAll(".tpreset").forEach(b => b.onclick = () => {
+  document.querySelectorAll(".tpreset").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active");
+  stopTimer(); timerSec = parseInt(b.dataset.min)*60;
+  document.getElementById("timer-display").textContent = fmt(timerSec);
+});
+
+/* ============================= RENDER ============================= */
+let view = { type: "day", id: 1 };
+let activeTab = "lesson";
+
+function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+function renderNav() {
+  const nav = document.getElementById("nav");
+  let html = '<div class="nav-item ' + (view.type==="home"?"active":"") + '" onclick="go(\'home\')">🏠 Dashboard ' + (pendingReviews()?'<span class="badge" style="background:var(--warn);color:#201200;border-radius:10px;font-size:10px;padding:1px 6px">'+pendingReviews()+'</span>':"") + '</div>';
+  html += '<div class="nav-item ' + (view.type==="review"?"active":"") + '" onclick="go(\'review\')">🔁 Review Queue <span class="badge" style="background:'+(pendingReviews()?"var(--warn)":"var(--panel2)")+';color:'+(pendingReviews()?"#201200":"var(--muted)")+';border-radius:10px;font-size:10px;padding:1px 6px">'+pendingReviews()+'</span></div>';
+  let w = 0;
+  for (const d of DAYS) {
+    if (d.week !== w) { w = d.week; html += '<div class="week-label">Week ' + w + '</div>'; }
+    html += '<div class="nav-item ' + (view.type==="day"&&view.id===d.id?"active":"") + ' ' + (state.daysDone[d.id]?"done":"") + '" onclick="go(\'day\',' + d.id + ')"><span class="num">' + (state.daysDone[d.id]?"✓":d.id) + '</span><span>' + d.title.split("—")[0].trim() + '</span></div>';
+  }
+  nav.innerHTML = html;
+}
+
+function render() {
+  renderNav();
+  const tb = document.getElementById("tb-title"), sub = document.getElementById("tb-sub"), c = document.getElementById("content");
+  if (view.type === "home") {
+    tb.textContent = "Dashboard"; sub.textContent = "SDE-2 DSA Preparation · 28-day roadmap";
+    c.innerHTML = renderHome();
+  } else if (view.type === "review") {
+    tb.textContent = "Spaced Repetition — Review Queue"; sub.textContent = "Difficult problems resurface at +1, +3, +7 days";
+    c.innerHTML = renderReview();
+  } else {
+    const d = DAYS.find(x => x.id === view.id);
+    tb.textContent = "Day " + d.id + " — " + d.title; sub.textContent = d.topics;
+    c.innerHTML = renderDay(d);
+  }
+  const el = document.getElementById("guided-code");
+  if (el && view.type === "day") {
+    const d = DAYS.find(x => x.id === view.id);
+    if (d && d.guided) el.textContent = d.guided.code;
+  }
+}
+function go(type, id) {
+  view = { type: type, id: id }; activeTab = "lesson";
+  document.querySelector(".main").scrollTop = 0;
+  render();
+}
+window.go = go;
+window.setTab = function(t){ activeTab = t; render(); };
+window.setStatus = setStatus; window.reviewDone = reviewDone; window.reviewRevisit = reviewRevisit;
+window.toggleDayDone = function(id){ state.daysDone[id] = !state.daysDone[id]; save(); render(); };
+window.guessPattern = function(key, inputId){
+  const guess = document.getElementById(inputId).value.trim();
+  const el = document.getElementById("pat-" + key);
+  const p = DAYS.find(d => d.id === view.id).practice.find(p => p.s === key);
+  if (!guess) { el.innerHTML = '<span style="color:var(--warn);font-size:12px">Commit to a guess first!</span>'; return; }
+  el.innerHTML = '<span class="pattern-shown">Your guess: ' + esc(guess) + ' → Actual: 🎯 ' + p.pat + '</span>';
+};
+
+function renderHome() {
+  const total = DAYS.reduce((a,d)=>a+d.practice.length,0);
+  const counts = { independent:0, hints:0, solution:0, revision:0 };
+  for (const k of Object.keys(state.problems)) { const st = state.problems[k].status; if (counts[st] !== undefined) counts[st]++; }
+  const solved = counts.independent + counts.hints + counts.solution + counts.revision;
+  const daysDone = Object.values(state.daysDone).filter(Boolean).length;
+  const nextDay = DAYS.find(d => !state.daysDone[d.id]);
+  if (!state.startDate) { state.startDate = todayStr(); save(); }
+  const start = state.startDate;
+  return `
+  <div class="lesson">
+    <h3>Welcome to your 28-day SDE-2 DSA preparation</h3>
+    <p>This app implements your complete preparation system: concept-first lessons (the underlying problem → the technique → variations), guided examples with dry runs, one-at-a-time LeetCode practice with spaced-repetition tracking (1/3/7 days), pattern-recognition mixed practice, and timed mock interviews.</p>
+    <div class="stat-grid">
+      <div class="stat"><div class="v">${daysDone}/28</div><div class="l">Days completed</div><div class="pbar"><div style="width:${daysDone/28*100}%"></div></div></div>
+      <div class="stat"><div class="v">${solved}/${total}</div><div class="l">Problems attempted</div><div class="pbar"><div style="width:${solved/total*100}%"></div></div></div>
+      <div class="stat"><div class="v" style="color:var(--good)">${counts.independent}</div><div class="l">Solved independently</div></div>
+      <div class="stat"><div class="v" style="color:var(--warn)">${counts.hints + counts.revision}</div><div class="l">With hints / revision</div></div>
+      <div class="stat"><div class="v" style="color:var(--bad)">${counts.solution}</div><div class="l">Needed solution</div></div>
+      <div class="stat"><div class="v" style="color:var(--warn)">${pendingReviews()}</div><div class="l">Reviews due today</div></div>
+    </div>
+    ${nextDay ? `<div class="callout"><b>Next up:</b> Day ${nextDay.id} — ${nextDay.title}.<br>
+      <b>Daily structure:</b> 30–45 min concepts (Lesson + Guided tabs) → 60–90 min problem solving (Practice tab) → 15–30 min review (Review Queue). Use the timer at the top right for each segment.</div>`
+      : `<div class="callout" style="border-left-color:var(--good)">🎉 <b>Roadmap complete!</b> Keep the rhythm: clear reviews daily, one mock every 2–3 days, one new medium problem daily.</div>`}
+    <h3>How to use each day</h3>
+    <ol>
+      <li><b>Lesson</b> — read the concept derivation: brute force → wasted work → technique → invariant → when NOT to use it.</li>
+      <li><b>Guided Example</b> — study the worked solution before attempting anything alone.</li>
+      <li><b>Practice</b> — one problem at a time, in order. Attempt it on LeetCode, then record your honest status. Non-independent solves auto-enter the review queue.</li>
+      <li><b>Check Understanding</b> — answer the conceptual questions OUT LOUD (or in your AI chat) before marking the day complete.</li>
+    </ol>
+    <div class="callout warn"><b>Pair this app with your AI instructor chat:</b> paste your solutions and conceptual answers into the chat conversation for SDE-2-level code review and Socratic feedback. This app tracks structure and spaced repetition; the chat provides the interactive coaching.</div>
+    <p class="note">Started: ${start} · All progress stored locally in your browser (localStorage). Target: interview-ready by Dec 7, 2026, mocks through Dec 14.</p>
+    <p style="margin-top:18px"><button class="btn" onclick="go('day',${nextDay?nextDay.id:1})">Continue to Day ${nextDay?nextDay.id:1} →</button></p>
+  </div>`;
+}
+
+function renderReview() {
+  const due = dueReviews();
+  const t = todayStr();
+  const scheduled = [];
+  for (const key of Object.keys(state.problems)) {
+    for (const r of (state.problems[key].reviews || [])) if (!r.done && r.due > t) scheduled.push({ p: state.problems[key], r });
+  }
+  scheduled.sort((a,b)=>a.r.due<b.r.due?-1:1);
+  let html = '<div class="lesson"><h3>Due now (' + due.length + ')</h3>';
+  if (!due.length) html += '<p>No reviews due today. 🎉 Clear your scheduled reviews when they arrive — consistency beats cramming.</p>';
+  for (const item of due) {
+    html += '<div class="review-item"><div><a href="' + item.p.url + '" target="_blank" style="color:var(--accent);font-weight:600;text-decoration:none">' + item.p.title + '</a>'
+      + '<span class="diff ' + item.p.diff + '" style="margin-left:8px">' + (item.p.diff==="easy"?"Easy":item.p.diff==="med"?"Medium":"Hard") + '</span>'
+      + '<div class="note" style="margin-top:4px">Day ' + item.p.day + ' · marked "' + STATUS_LABEL[item.p.status] + '" on ' + item.p.date + ' · re-solve from scratch</div></div>'
+      + '<div><button class="btn small" style="background:var(--good)" onclick="reviewDone(\'' + item.key + '\')">Done ✓</button> '
+      + '<button class="btn small ghost" onclick="reviewRevisit(\'' + item.key + '\')">Still hard ↺</button></div></div>';
+  }
+  html += '<h3 style="margin-top:28px">Upcoming (next 7 days)</h3>';
+  if (!scheduled.length) html += '<p class="note">Nothing scheduled yet. Mark problems in Practice tabs to build your queue.</p>';
+  for (const s of scheduled.slice(0, 12)) {
+    html += '<div class="prob-card" style="padding:10px 16px"><span style="font-size:13.5px">' + s.p.title + '</span><span class="note" style="float:right">due ' + s.r.due + '</span></div>';
+  }
+  return html + "</div>";
+}
+
+function renderDay(d) {
+  const tabs = [
+    ["lesson","📖 Lesson"],["guided","🧑‍🏫 Guided Example"],
+    ["practice","🎯 Practice" + (d.id===25?" (pattern hidden!)":"")],["checks","✅ Check Understanding"]
+  ];
+  let html = '<div class="tabs">' + tabs.map(t =>
+    '<div class="tab ' + (activeTab===t[0]?"active":"") + '" onclick="setTab(\'' + t[0] + '\')">' + t[1] + '</div>').join("") + '</div>';
+
+  if (activeTab === "lesson") {
+    html += '<div class="lesson">' + d.lesson + '</div>';
+  } else if (activeTab === "guided") {
+    html += '<div class="lesson"><h3>' + d.guided.title + '</h3>'
+      + '<div class="callout"><b>Intuition &amp; derivation:</b><br>' + d.guided.intuition + '</div>'
+      + '<pre id="guided-code"></pre>'
+      + '<div class="callout"><b>Complexity &amp; edge cases:</b><br>' + d.guided.complexity + '</div>'
+      + '<p class="note">Study this until you could re-derive it on a whiteboard — then move to Practice and attempt problems cold.</p></div>';
+  } else if (activeTab === "practice") {
+    html += '<div class="lesson"><p><b>One problem at a time.</b> Attempt it on LeetCode before looking at anything else. For each problem: state your approach, the invariant, and the complexity — then implement. Record your honest status; anything not "independent" automatically enters the 1/3/7-day review cycle.</p>';
+    if (d.id === 25) html += '<div class="callout warn"><b>Pattern-recognition mode:</b> commit a written pattern guess before revealing. Use the four identification questions from the Lesson tab.</div>';
+    if (d.id === 27) html += '<div class="callout warn"><b>Mock mode:</b> 35 minutes per problem, strict. Follow the clarify → approach → code → test protocol from the Lesson tab.</div>';
+    html += '</div>';
+    d.practice.forEach((p, i) => {
+      const st = state.problems[p.s] ? state.problems[p.s].status : null;
+      const probJSON = JSON.stringify(p).replace(/"/g,'&quot;');
+      html += '<div class="prob-card"><div class="prob-head"><div class="prob-title">'
+        + (d.id===25 ? (i+1) + '. ' + p.t : (i+1) + '. <a href="' + LC(p.s) + '" target="_blank">' + p.t + ' ↗</a>')
+        + (d.id===25 ? ' <a href="' + LC(p.s) + '" target="_blank" style="font-size:12px;margin-left:6px">open ↗</a>' : '')
+        + ' <span class="diff ' + p.d + '">' + (p.d===E?"Easy":p.d===M?"Medium":"Hard") + '</span></div></div>';
+      if (d.id===25) {
+        html += '<div style="margin-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">'
+          + '<input class="guess" id="guess-' + p.s + '" placeholder="Your pattern guess…">'
+          + '<button class="reveal-pat" onclick="guessPattern(\'' + p.s + '\',\'guess-' + p.s + '\')">Commit &amp; reveal pattern</button></div>'
+          + '<div id="pat-' + p.s + '" style="margin-top:8px"></div>';
+      }
+      html += '<div class="status-btns">' + Object.keys(STATUS_LABEL).map(k =>
+        '<button class="sbtn ' + (st===k?("sel-"+k):"") + '" onclick="setStatus(' + d.id + ',JSON.parse(\'' + probJSON.replace(/'/g,"\\'") + '\'),\'' + k + '\')">' + STATUS_LABEL[k] + '</button>').join("") + '</div></div>';
+    });
+  } else if (activeTab === "checks") {
+    html += '<div class="lesson"><p><b>Before marking this day complete</b>, answer these out loud (or write them in your AI instructor chat for evaluation). Don\'t move on until you can answer each one cleanly — these test understanding, not recall.</p></div>';
+    d.checks.forEach((q, i) => {
+      html += '<div class="check-q"><span class="qn">Conceptual Check ' + (i+1) + '</span>' + q + '</div>';
+    });
+  }
+
+  const done = !!state.daysDone[d.id];
+  html += '<div class="day-complete"><div><b>' + (done ? "✅ Day "+d.id+" complete" : "Day "+d.id+" learning objectives") + '</b>'
+    + '<div class="note">' + (done ? "Great work. Come back tomorrow — or review earlier days anytime." : "Lesson read · guided example studied · practice attempted · conceptual checks answered") + '</div></div>'
+    + '<button class="btn ' + (done?"ghost":"") + '" onclick="toggleDayDone(' + d.id + ')">' + (done?"Mark incomplete":"Mark Day "+d.id+" Complete") + '</button></div>';
+  if (done && d.id < 28) html += '<p style="margin-top:14px"><button class="btn" onclick="go(\'day\',' + (d.id+1) + ')">Go to Day ' + (d.id+1) + ' →</button></p>';
+  return html;
+}
+
+render();
+</script>
+</body>
+</html>
